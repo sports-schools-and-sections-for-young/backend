@@ -60,7 +60,7 @@ class Section(models.Model):
         verbose_name='Название секции',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -120,7 +120,7 @@ class Trainer(models.Model):
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -171,7 +171,7 @@ class Day_of_week(models.Model):
         verbose_name='День недели',
         max_length=11,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -235,12 +235,14 @@ class Photo_of_section(models.Model):
     photo = models.ImageField(
         verbose_name='Фотография секции',
         upload_to='img/sections',
-        blank=False)
+        blank=False
+    )
     section = models.ForeignKey(
         Section,
         verbose_name='Секция',
         on_delete=models.CASCADE,
-        blank=False)
+        blank=False
+    )
 
     class Meta:
         verbose_name = 'Фотография'

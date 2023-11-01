@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
     'sections.apps.SectionsConfig',
 ]
@@ -113,7 +114,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_USER_MODEL = 'organizations.Sport_organization'
+AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

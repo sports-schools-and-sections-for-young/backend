@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import (MinLengthValidator, MaxLengthValidator,
                                     MinValueValidator, MaxValueValidator)
-from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 
 
 class Address(models.Model):
@@ -10,7 +10,7 @@ class Address(models.Model):
         verbose_name='Индекс',
         validators=[
             MinLengthValidator(6, message='Минимум 6 символов'),
-            MaxLengthValidator(6, message='Максимум 6 символов'),
+            MaxLengthValidator(6, message='Максимум 6 символов')
         ],
         blank=False
     )
@@ -18,7 +18,7 @@ class Address(models.Model):
         verbose_name='Город',
         max_length=25,
         validators=[
-            MinLengthValidator(2, message='Минимум 2 символа'),
+            MinLengthValidator(2, message='Минимум 2 символа')
         ],
         blank=False
     )
@@ -26,7 +26,7 @@ class Address(models.Model):
         verbose_name='Метро',
         max_length=65,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=True
     )
@@ -34,7 +34,7 @@ class Address(models.Model):
         verbose_name='Район',
         max_length=65,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -42,7 +42,7 @@ class Address(models.Model):
         verbose_name='Улица',
         max_length=150,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -50,7 +50,7 @@ class Address(models.Model):
         verbose_name='Дом',
         validators=[
             MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(65, message='Максимум 65 символов'),
+            MaxLengthValidator(6, message='Максимум 65 символов')
         ],
         blank=False
     )
@@ -64,13 +64,13 @@ class Address(models.Model):
         return f'{self.city}, {self.street}, {self.house}'
 
 
-class Sport_organization(AbstractUser):
+class Sport_organization(models.Model):
     """Модель спортшколы."""
     title = models.CharField(
         verbose_name='Название организации',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -89,7 +89,7 @@ class Sport_organization(AbstractUser):
         verbose_name='Адрес электронной почты',
         max_length=320,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         unique=True,
         blank=False
@@ -109,6 +109,11 @@ class Sport_organization(AbstractUser):
         max_length=60,
         validators=[
             MinLengthValidator(5, message='Минимум 5 символов'),
+            RegexValidator(
+                regex=r'^[a-z]+$',
+                message='Логин может содержать только символы '
+                        'английского алфавита.'
+            ),
         ],
         unique=True,
         blank=False
@@ -121,9 +126,6 @@ class Sport_organization(AbstractUser):
         ],
         blank=False
     )
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('login', )
 
     class Meta:
         verbose_name = 'Спортивная школа'
@@ -151,7 +153,7 @@ class Order(models.Model):
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
@@ -159,7 +161,7 @@ class Order(models.Model):
         verbose_name='Возраст ребенка',
         validators=[
             MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(2, message='Максимум 2 символа'),
+            MaxLengthValidator(6, message='Максимум 2 символа')
         ],
         blank=False
     )
@@ -173,6 +175,10 @@ class Order(models.Model):
         max_length=18,
         validators=[
             MinLengthValidator(18, message='Минимум 18 символов'),
+            RegexValidator(
+                regex=r'^\+7\(\d{3}\)\d{7}$',
+                message='Неправильный формат номера телефона.'
+            ),
         ],
         blank=False
     )
@@ -186,10 +192,14 @@ class Order(models.Model):
 class Phone_number(models.Model):
     """Модель номера телефона."""
     value = models.CharField(
-        verbose_name='Телефон',
+        verbose_name='Номер телефона',
         max_length=18,
         validators=[
             MinLengthValidator(18, message='Минимум 18 символов'),
+            RegexValidator(
+                regex=r'^\+7\(\d{3}\)\d{7}$',
+                message='Неправильный формат номера телефона.'
+            ),
         ],
         blank=False
     )
@@ -234,7 +244,7 @@ class Rewiev(models.Model):
             MinLengthValidator(1, message='Минимум 1 символ'),
             MaxLengthValidator(1, message='Максимум 1 символ'),
             MinValueValidator(1, message='Минимумальное значение 1'),
-            MaxValueValidator(5, message='Максимальноезначение 5'),
+            MaxValueValidator(5, message='Максимальное значение 5'),
         ],
         blank=False
     )
