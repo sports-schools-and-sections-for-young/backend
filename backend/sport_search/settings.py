@@ -25,8 +25,8 @@ INSTALLED_APPS = [
     'djoser',
     'django_filters',
     'api.apps.ApiConfig',
-    'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
+    'sections.apps.SectionsConfig',
 ]
 
 MIDDLEWARE = [
@@ -113,7 +113,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'organizations.Sport_organization'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -129,3 +129,5 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
