@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import (Address, Order, Phone_number, Phone_of_organization,
-                     Rewiev, Sport_organization)
+from .models import (Address, Order, PhoneNumber, PhoneOfOrganization, Rewiev,
+                     SportOrganization)
 
 
 @admin.register(Address)
@@ -13,8 +13,8 @@ class AddressAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-@admin.register(Sport_organization)
-class Sport_organizationAdmin(admin.ModelAdmin):
+@admin.register(SportOrganization)
+class SportOrganizationAdmin(admin.ModelAdmin):
     list_display = ('title', 'logo', 'address', 'email',
                     'site', 'description')
     list_filter = ('title', 'logo', 'address', 'email',
@@ -24,22 +24,22 @@ class Sport_organizationAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('sport_organization', 'fio', 'age', 'gender',
+    list_display = ('SportOrganization', 'fio', 'age', 'gender',
                     'phone', 'comment')
-    list_filter = ('sport_organization', 'fio', 'age', 'gender',
+    list_filter = ('SportOrganization', 'fio', 'age', 'gender',
                    'phone')
     empty_value_display = '-пусто-'
 
 
-@admin.register(Phone_number)
-class Phone_numberAdmin(admin.ModelAdmin):
+@admin.register(PhoneNumber)
+class PhoneNumberAdmin(admin.ModelAdmin):
     list_display = ('value', 'comment')
     list_filter = ('value', )
     empty_value_display = '-пусто-'
 
 
-@admin.register(Phone_of_organization)
-class Phone_of_organizationAdmin(admin.ModelAdmin):
+@admin.register(PhoneOfOrganization)
+class PhoneOfOrganizationAdmin(admin.ModelAdmin):
     list_display = ('phone', 'sport_school')
     list_filter = ('phone', 'sport_school')
 

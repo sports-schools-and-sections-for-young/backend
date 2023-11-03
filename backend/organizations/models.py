@@ -1,7 +1,7 @@
+from django.core.validators import (MaxLengthValidator, MaxValueValidator,
+                                    MinLengthValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
-from django.core.validators import (MinLengthValidator, MaxLengthValidator,
-                                    MinValueValidator, MaxValueValidator)
-from django.core.validators import RegexValidator
 
 
 class Address(models.Model):
@@ -64,7 +64,7 @@ class Address(models.Model):
         return f'{self.city}, {self.street}, {self.house}'
 
 
-class Sport_organization(models.Model):
+class SportOrganization(models.Model):
     """Модель спортшколы."""
     title = models.CharField(
         verbose_name='Название организации',
@@ -144,7 +144,7 @@ class Sport_organization(models.Model):
 class Order(models.Model):
     """Модель заявки."""
     sport_organization = models.ForeignKey(
-        Sport_organization,
+        SportOrganization,
         verbose_name='Спортивная школа',
         on_delete=models.CASCADE,
         blank=False
@@ -189,7 +189,7 @@ class Order(models.Model):
     )
 
 
-class Phone_number(models.Model):
+class PhoneNumber(models.Model):
     """Модель номера телефона."""
     value = models.CharField(
         verbose_name='Номер телефона',
@@ -210,16 +210,16 @@ class Phone_number(models.Model):
     )
 
 
-class Phone_of_organization(models.Model):
+class PhoneOfOrganization(models.Model):
     """Модель, которая связывает номера телефона и спортшколу."""
     phone = models.ForeignKey(
-        Phone_number,
+        PhoneNumber,
         verbose_name='Телефон',
         on_delete=models.CASCADE,
         blank=False
     )
     sport_school = models.ForeignKey(
-        Sport_organization,
+        SportOrganization,
         verbose_name='Спортивная школа',
         on_delete=models.CASCADE,
         blank=False
@@ -249,7 +249,7 @@ class Rewiev(models.Model):
         blank=False
     )
     sport_school = models.ForeignKey(
-        Sport_organization,
+        SportOrganization,
         verbose_name='Спортивная школа',
         on_delete=models.CASCADE,
         blank=False)

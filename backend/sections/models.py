@@ -1,9 +1,9 @@
+from django.core.validators import MaxLengthValidator, MinLengthValidator
 from django.db import models
-from django.core.validators import MinLengthValidator, MaxLengthValidator
-from organizations.models import Address, Phone_number, Sport_organization
+from organizations.models import Address, PhoneNumber, SportOrganization
 
 
-class Sport_type(models.Model):
+class SportType(models.Model):
     """Модель вида спорта."""
     title = models.CharField(
         verbose_name='Название вида спорта',
@@ -20,7 +20,7 @@ class Sport_type(models.Model):
         return self.title
 
 
-class Age_group(models.Model):
+class AgeGroup(models.Model):
     """Модель возрастной группы."""
     year_from = models.PositiveIntegerField(
         verbose_name='Нижняя граница возрастной группы',
@@ -51,7 +51,7 @@ class Age_group(models.Model):
 class Section(models.Model):
     """Модель секции."""
     sport_organization = models.ForeignKey(
-        Sport_organization,
+        SportOrganization,
         verbose_name='Спортивная школа',
         on_delete=models.CASCADE,
         blank=False
@@ -70,13 +70,13 @@ class Section(models.Model):
         blank=True
     )
     sport_type = models.ForeignKey(
-        Sport_type,
+        SportType,
         verbose_name='Вид спорта',
         on_delete=models.CASCADE,
         blank=False
     )
     age_group = models.ForeignKey(
-        Age_group,
+        AgeGroup,
         verbose_name='Возрастная группа',
         on_delete=models.CASCADE,
         blank=False
@@ -144,7 +144,7 @@ class Trainer(models.Model):
         return self.fio
 
 
-class Section_and_Trainer(models.Model):
+class SectionTrainer(models.Model):
     """Модель, которая связывает секции и тренера."""
     section = models.ForeignKey(
         Section,
@@ -165,7 +165,7 @@ class Section_and_Trainer(models.Model):
         ordering = ('id', )
 
 
-class Day_of_week(models.Model):
+class DayOfWeek(models.Model):
     """Модель дня недели."""
     title = models.CharField(
         verbose_name='День недели',
@@ -194,7 +194,7 @@ class Shedule(models.Model):
         blank=False
     )
     day = models.ForeignKey(
-        Day_of_week,
+        DayOfWeek,
         verbose_name='День недели',
         on_delete=models.CASCADE,
         blank=False
@@ -214,10 +214,10 @@ class Shedule(models.Model):
         ordering = ('id', )
 
 
-class Phone_of_section(models.Model):
+class PhoneOfSection(models.Model):
     """Модель, которая связывает номера телефона и секцию спортшколы."""
     phone = models.ForeignKey(
-        Phone_number,
+        PhoneNumber,
         verbose_name='Номер телефона',
         on_delete=models.CASCADE,
         blank=False
@@ -230,7 +230,7 @@ class Phone_of_section(models.Model):
     )
 
 
-class Photo_of_section(models.Model):
+class PhotoOfSection(models.Model):
     """Модель фотографии секции."""
     photo = models.ImageField(
         verbose_name='Фотография секции',
