@@ -50,7 +50,7 @@ class Age_group(models.Model):
 
 class Section(models.Model):
     """Модель секции."""
-    sports_organization = models.ForeignKey(
+    sport_organization = models.ForeignKey(
         Sport_organization,
         verbose_name='Спортивная школа',
         on_delete=models.CASCADE,
@@ -111,7 +111,7 @@ class Section(models.Model):
     class Meta:
         verbose_name = 'Секция'
         verbose_name_plural = 'Секции'
-        ordering = ('sports_organization', 'title', )
+        ordering = ('sport_organization', 'title', )
 
 
 class Trainer(models.Model):
@@ -220,13 +220,13 @@ class Phone_of_section(models.Model):
         Phone_number,
         verbose_name='Номер телефона',
         on_delete=models.CASCADE,
-        blank=True
+        blank=False
     )
     section = models.ForeignKey(
         Section,
         verbose_name='Секция спортивной школы',
         on_delete=models.CASCADE,
-        blank=True
+        blank=False
     )
 
 
@@ -235,7 +235,7 @@ class Photo_of_section(models.Model):
     photo = models.ImageField(
         verbose_name='Фотография секции',
         upload_to='img/sections',
-        blank=False
+        blank=True
     )
     section = models.ForeignKey(
         Section,
