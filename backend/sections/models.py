@@ -12,8 +12,8 @@ class SportType(models.Model):
     )
 
     class Meta:
-        verbose_name = "Название вида спорта"
-        verbose_name_plural = "Название видов спорта"
+        verbose_name = "Вид спорта"
+        verbose_name_plural = "Виды спорта"
         ordering = ('id', )
 
     def __str__(self):
@@ -229,6 +229,10 @@ class PhoneOfSection(models.Model):
         blank=False
     )
 
+    class Meta:
+        verbose_name = 'Телефон секции'
+        verbose_name_plural = 'Телефоны секции'
+
 
 class PhotoOfSection(models.Model):
     """Модель фотографии секции."""
@@ -245,6 +249,6 @@ class PhotoOfSection(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Фотография'
-        verbose_name_plural = 'Фотографии'
+        verbose_name = 'Фотография секции'
+        verbose_name_plural = 'Фотографии секции'
         ordering = ('id', )

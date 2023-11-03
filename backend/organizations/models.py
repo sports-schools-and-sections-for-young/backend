@@ -188,6 +188,10 @@ class Order(models.Model):
         blank=True
     )
 
+    class Meta:
+        verbose_name = 'Заявка'
+        verbose_name_plural = 'Заявки'
+
 
 class PhoneNumber(models.Model):
     """Модель номера телефона."""
@@ -209,6 +213,10 @@ class PhoneNumber(models.Model):
         blank=True
     )
 
+    class Meta:
+        verbose_name = 'Номер телефона'
+        verbose_name_plural = 'Номера телефонов'
+
 
 class PhoneOfOrganization(models.Model):
     """Модель, которая связывает номера телефона и спортшколу."""
@@ -224,6 +232,10 @@ class PhoneOfOrganization(models.Model):
         on_delete=models.CASCADE,
         blank=False
     )
+
+    class Meta:
+        verbose_name = 'Телефон спортшколы'
+        verbose_name_plural = 'Телефоны спортшколы'
 
 
 class Rewiev(models.Model):

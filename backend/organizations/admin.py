@@ -24,9 +24,9 @@ class SportOrganizationAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('SportOrganization', 'fio', 'age', 'gender',
+    list_display = ('sport_organization', 'fio', 'age', 'gender',
                     'phone', 'comment')
-    list_filter = ('SportOrganization', 'fio', 'age', 'gender',
+    list_filter = ('sport_organization', 'fio', 'age', 'gender',
                    'phone')
     empty_value_display = '-пусто-'
 
