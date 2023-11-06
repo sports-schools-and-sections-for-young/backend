@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
                      Section, SectionTrainer, Shedule, SportType, Trainer)
+from .utils import DayOfWeekFilter
 
 
 @admin.register(SportType)
@@ -46,8 +47,12 @@ class DayOfWeekAdmin(admin.ModelAdmin):
 
 @admin.register(Shedule)
 class SheduleAdmin(admin.ModelAdmin):
-    list_display = ('section', 'day', 'time_from', 'time_until')
-    list_filter = ('section', 'day', 'time_from', 'time_until')
+    list_display = ('section', 'get_days', 'time_from', 'time_until')
+    list_filter = ('section', DayOfWeekFilter)
+
+    def get_days(self, obj):
+        """Метод для отображения дней недели в админке."""
+        return ", ".join([day.title for day in obj.day.all()])
 
 
 @admin.register(PhoneOfSection)
@@ -58,6 +63,6 @@ class PhoneOfSectionAdmin(admin.ModelAdmin):
 
 @admin.register(PhotoOfSection)
 class PhotoOfSectionAdmin(admin.ModelAdmin):
-    list_display = ('photo', 'section')
+    list_display = ('section', )
     list_filter = ('section', )
     empty_value_display = '-пусто-'

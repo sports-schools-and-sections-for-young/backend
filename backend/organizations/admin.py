@@ -6,28 +6,23 @@ from .models import (Address, Order, PhoneNumber, PhoneOfOrganization, Rewiev,
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ('index', 'city', 'metro', 'district',
-                    'street', 'house')
-    list_filter = ('index', 'city', 'metro', 'district',
-                   'street', 'house')
+    list_display = ('index', 'city', 'metro', 'district', 'street', 'house')
+    list_filter = ('index', 'city', 'metro', 'district', 'street', 'house')
     empty_value_display = '-пусто-'
 
 
 @admin.register(SportOrganization)
 class SportOrganizationAdmin(admin.ModelAdmin):
-    list_display = ('title', 'logo', 'address', 'email',
-                    'site', 'description')
-    list_filter = ('title', 'logo', 'address', 'email',
-                   'site')
+    list_display = ('title', 'address', 'email', 'site', 'description')
+    list_filter = ('title', 'address', 'email', 'site')
     empty_value_display = '-пусто-'
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('sport_organization', 'fio', 'age', 'gender',
-                    'phone', 'comment')
-    list_filter = ('sport_organization', 'fio', 'age', 'gender',
-                   'phone')
+    list_display = ('sport_organization', 'fio', 'age', 'gender', 'phone',
+                    'comment')
+    list_filter = ('sport_organization', 'fio', 'age', 'gender', 'phone')
     empty_value_display = '-пусто-'
 
 

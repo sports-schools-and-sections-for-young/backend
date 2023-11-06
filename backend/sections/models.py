@@ -1,6 +1,12 @@
-from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.core.validators import (MaxLengthValidator, MaxValueValidator,
+                                    MinLengthValidator, MinValueValidator)
 from django.db import models
 from organizations.models import Address, PhoneNumber, SportOrganization
+
+GENDER_CHOICES = (
+    ('Man', 'Мужской'),
+    ('Woman', 'Женский'),
+)
 
 
 class SportType(models.Model):
@@ -25,16 +31,16 @@ class AgeGroup(models.Model):
     year_from = models.PositiveIntegerField(
         verbose_name='Нижняя граница возрастной группы',
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(2, message='Максимум 2 символа'),
+            MinValueValidator(1, message='Минимальное значение 1'),
+            MaxValueValidator(99, message='Максимальное значение 99'),
         ],
         blank=False
     )
     year_until = models.PositiveIntegerField(
         verbose_name='Верхняя граница возрастной группы',
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(2, message='Максимум 2 символа'),
+            MinValueValidator(1, message='Минимальное значение 1'),
+            MaxValueValidator(99, message='Максимальное значение 99'),
         ],
         blank=False
     )
@@ -67,31 +73,34 @@ class Section(models.Model):
     gender = models.CharField(
         verbose_name='Пол детей',
         max_length=7,
+        choices=GENDER_CHOICES,
         blank=True
     )
     sport_type = models.ForeignKey(
         SportType,
         verbose_name='Вид спорта',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=False
     )
     age_group = models.ForeignKey(
         AgeGroup,
         verbose_name='Возрастная группа',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=False
     )
     address = models.ForeignKey(
         Address,
         verbose_name='Адрес секции',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=False
     )
     aviable = models.PositiveIntegerField(
         verbose_name='Наличие свободных мест',
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(3, message='Максимум 3 символа'),
+            MaxValueValidator(999, message='Максимальное значение 999'),
         ],
         null=True,
         blank=False,
@@ -100,8 +109,7 @@ class Section(models.Model):
     price = models.PositiveIntegerField(
         verbose_name='Стоимость посещения секции в месяц в рублях',
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(6, message='Максимум 6 символов'),
+            MaxValueValidator(99999, message='Максимальное значение 99999'),
         ],
         null=True,
         blank=False,
@@ -112,6 +120,9 @@ class Section(models.Model):
         verbose_name = 'Секция'
         verbose_name_plural = 'Секции'
         ordering = ('sport_organization', 'title', )
+
+    def __str__(self):
+        return self.title
 
 
 class Trainer(models.Model):
@@ -132,7 +143,7 @@ class Trainer(models.Model):
     photo = models.ImageField(
         verbose_name='Фотография тренера',
         upload_to='img/trainers',
-        blank=False
+        blank=True
     )
 
     class Meta:
@@ -162,7 +173,9 @@ class SectionTrainer(models.Model):
     class Meta:
         verbose_name = "Секция и тренер"
         verbose_name_plural = "Секции и тренера"
-        ordering = ('id', )
+
+    def __str__(self):
+        return self.section.sport_organization.title
 
 
 class DayOfWeek(models.Model):
@@ -179,7 +192,6 @@ class DayOfWeek(models.Model):
     class Meta:
         verbose_name = 'День недели'
         verbose_name_plural = 'Дни недели'
-        ordering = ('id', )
 
     def __str__(self):
         return self.title
@@ -193,10 +205,9 @@ class Shedule(models.Model):
         on_delete=models.CASCADE,
         blank=False
     )
-    day = models.ForeignKey(
+    day = models.ManyToManyField(
         DayOfWeek,
         verbose_name='День недели',
-        on_delete=models.CASCADE,
         blank=False
     )
     time_from = models.TimeField(
@@ -213,9 +224,12 @@ class Shedule(models.Model):
         verbose_name_plural = 'Расписания'
         ordering = ('id', )
 
+    def __str__(self):
+        return f'{self.section.title}'
+
 
 class PhoneOfSection(models.Model):
-    """Модель, которая связывает номера телефона и секцию спортшколы."""
+    """Модель, которая связывает номер телефона и секцию спортшколы."""
     phone = models.ForeignKey(
         PhoneNumber,
         verbose_name='Номер телефона',
@@ -232,6 +246,9 @@ class PhoneOfSection(models.Model):
     class Meta:
         verbose_name = 'Телефон секции'
         verbose_name_plural = 'Телефоны секции'
+
+    def __str__(self):
+        return self.phone.value
 
 
 class PhotoOfSection(models.Model):
@@ -252,3 +269,6 @@ class PhotoOfSection(models.Model):
         verbose_name = 'Фотография секции'
         verbose_name_plural = 'Фотографии секции'
         ordering = ('id', )
+
+    def __str__(self):
+        return f'Фото секции {self.section.title}'

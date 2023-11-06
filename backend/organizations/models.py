@@ -3,14 +3,21 @@ from django.core.validators import (MaxLengthValidator, MaxValueValidator,
                                     RegexValidator)
 from django.db import models
 
+GENDER_CHOICES = (
+    ('Man', 'Мужской'),
+    ('Woman', 'Женский'),
+)
+
 
 class Address(models.Model):
     """Модель адреса секции или спортшколы."""
     index = models.PositiveIntegerField(
         verbose_name='Индекс',
         validators=[
-            MinLengthValidator(6, message='Минимум 6 символов'),
-            MaxLengthValidator(6, message='Максимум 6 символов')
+            RegexValidator(
+                regex=r'^\d{6}$',
+                message='Неправильный формат индекса'
+            ),
         ],
         blank=False
     )
@@ -46,11 +53,11 @@ class Address(models.Model):
         ],
         blank=False
     )
-    house = models.PositiveIntegerField(
+    house = models.CharField(
         verbose_name='Дом',
+        max_length=20,
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(6, message='Максимум 65 символов')
+            MinLengthValidator(1, message='Минимум 1 символ')
         ],
         blank=False
     )
@@ -61,7 +68,7 @@ class Address(models.Model):
         ordering = ('city', 'street', 'house', )
 
     def __str__(self):
-        return f'{self.city}, {self.street}, {self.house}'
+        return f'{self.index}, {self.city}, {self.district}, {self.street}, {self.house}'
 
 
 class SportOrganization(models.Model):
@@ -77,12 +84,13 @@ class SportOrganization(models.Model):
     logo = models.ImageField(
         verbose_name='Логотип организации',
         upload_to='img/organizations',
-        blank=False
+        blank=True
     )
     address = models.ForeignKey(
         Address,
         verbose_name='Адрес спортивной школы',
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=False
     )
     email = models.EmailField(
@@ -160,30 +168,27 @@ class Order(models.Model):
     age = models.PositiveIntegerField(
         verbose_name='Возраст ребенка',
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(6, message='Максимум 2 символа')
+            MinValueValidator(1, message='Минимальное значение 1'),
+            MaxValueValidator(99, message='Максимальное значение 99'),
         ],
         blank=False
     )
     gender = models.CharField(
         verbose_name='Пол ребенка',
         max_length=7,
+        choices=GENDER_CHOICES,
         blank=False
     )
     phone = models.CharField(
         verbose_name='Номер телефона для связи',
         max_length=18,
         validators=[
-            MinLengthValidator(18, message='Минимум 18 символов'),
-            RegexValidator(
-                regex=r'^\+7\(\d{3}\)\d{7}$',
-                message='Неправильный формат номера телефона.'
-            ),
+            MinLengthValidator(14, message='Минимум 14 символов'),
         ],
         blank=False
     )
     comment = models.CharField(
-        verbose_name='Комментраий к заявке',
+        verbose_name='Комментарий к заявке',
         max_length=255,
         blank=True
     )
@@ -192,6 +197,9 @@ class Order(models.Model):
         verbose_name = 'Заявка'
         verbose_name_plural = 'Заявки'
 
+    def __str__(self):
+        return f'Заявка в спортшколу {self.sport_organization.title}'
+
 
 class PhoneNumber(models.Model):
     """Модель номера телефона."""
@@ -199,11 +207,7 @@ class PhoneNumber(models.Model):
         verbose_name='Номер телефона',
         max_length=18,
         validators=[
-            MinLengthValidator(18, message='Минимум 18 символов'),
-            RegexValidator(
-                regex=r'^\+7\(\d{3}\)\d{7}$',
-                message='Неправильный формат номера телефона.'
-            ),
+            MinLengthValidator(14, message='Минимум 14 символов'),
         ],
         blank=False
     )
@@ -216,6 +220,9 @@ class PhoneNumber(models.Model):
     class Meta:
         verbose_name = 'Номер телефона'
         verbose_name_plural = 'Номера телефонов'
+
+    def __str__(self):
+        return self.value
 
 
 class PhoneOfOrganization(models.Model):
@@ -237,6 +244,9 @@ class PhoneOfOrganization(models.Model):
         verbose_name = 'Телефон спортшколы'
         verbose_name_plural = 'Телефоны спортшколы'
 
+    def __str__(self):
+        return f'Телефон спортшколы {self.sport_school}'
+
 
 class Rewiev(models.Model):
     """Модель отзыва о спортшколе."""
@@ -253,8 +263,6 @@ class Rewiev(models.Model):
     rating = models.PositiveIntegerField(
         verbose_name='Рейтинг',
         validators=[
-            MinLengthValidator(1, message='Минимум 1 символ'),
-            MaxLengthValidator(1, message='Максимум 1 символ'),
             MinValueValidator(1, message='Минимумальное значение 1'),
             MaxValueValidator(5, message='Максимальное значение 5'),
         ],
@@ -264,9 +272,13 @@ class Rewiev(models.Model):
         SportOrganization,
         verbose_name='Спортивная школа',
         on_delete=models.CASCADE,
-        blank=False)
+        blank=False
+    )
 
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
         ordering = ('id', )
+
+    def __str__(self):
+        return f'Отзыв о спортшколе {self.sport_school.title}'
