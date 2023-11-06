@@ -1,5 +1,5 @@
-from django.core.validators import (MaxLengthValidator, MaxValueValidator,
-                                    MinLengthValidator, MinValueValidator)
+from django.core.validators import (MaxValueValidator, MinLengthValidator,
+                                    MinValueValidator)
 from django.db import models
 from organizations.models import Address, PhoneNumber, SportOrganization
 

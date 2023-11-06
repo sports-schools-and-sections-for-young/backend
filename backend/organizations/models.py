@@ -1,6 +1,5 @@
-from django.core.validators import (MaxLengthValidator, MaxValueValidator,
-                                    MinLengthValidator, MinValueValidator,
-                                    RegexValidator)
+from django.core.validators import (MaxValueValidator, MinLengthValidator,
+                                    MinValueValidator, RegexValidator)
 from django.db import models
 
 GENDER_CHOICES = (
@@ -68,7 +67,8 @@ class Address(models.Model):
         ordering = ('city', 'street', 'house', )
 
     def __str__(self):
-        return f'{self.index}, {self.city}, {self.district}, {self.street}, {self.house}'
+        return (f'{self.index}, {self.city}, {self.district}, {self.street}, '
+                f'{self.house}')
 
 
 class SportOrganization(models.Model):
