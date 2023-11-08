@@ -72,7 +72,12 @@ class Address(models.Model):
 
 
 class SportOrganization(models.Model):
-    """Модель спортшколы."""
+    """
+    Модель спортшколы.
+    Алгоритм добавления спортшколы: пользователь регистрируется на сайте со
+    следующими полями: логин, e-mail, имя, фамилия, пароль. Затем пользователь
+    авторизуется на сайте и в личном кабинете добавляет спортшколу.
+    """
     title = models.CharField(
         verbose_name='Название организации',
         max_length=255,
@@ -102,7 +107,7 @@ class SportOrganization(models.Model):
         unique=True,
         blank=False
     )
-    site = models.CharField(
+    site = models.URLField(
         verbose_name='Сайт или страничка в VK',
         max_length=255,
         blank=True
@@ -112,38 +117,10 @@ class SportOrganization(models.Model):
         max_length=20000,
         blank=False
     )
-    login = models.CharField(
-        verbose_name='Логин',
-        max_length=60,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
-            RegexValidator(
-                regex=r'^[a-z]+$',
-                message='Логин может содержать только символы '
-                        'английского алфавита.'
-            ),
-        ],
-        unique=True,
-        blank=False
-    )
-    password = models.CharField(
-        verbose_name='Пароль',
-        max_length=16,
-        validators=[
-            MinLengthValidator(8, message='Минимум 8 символов'),
-        ],
-        blank=False
-    )
 
     class Meta:
         verbose_name = 'Спортивная школа'
         verbose_name_plural = 'Спортивные школы'
-        constraints = [
-            models.UniqueConstraint(
-                fields=('email', 'login'),
-                name='unique_email_login'
-            )
-        ]
 
     def __str__(self):
         return self.title
