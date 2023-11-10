@@ -10,8 +10,8 @@ router = DefaultRouter()
 # Эндпойнт для отображения всех видов спорта из БД
 router.register('sport_types', SportTypeViewSet, basename='sport_types')
 # Эндпойнт для поиска секций
-router.register('search_section', SearchSectionViewSet,
-                basename='search_section')
+router.register('search_sections', SearchSectionViewSet,
+                basename='search_sections')
 
 urlpatterns = [
     path('', include(router.urls)),
