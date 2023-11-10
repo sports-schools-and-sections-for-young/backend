@@ -1,16 +1,20 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import SportTypeViewSet
+from .views import SearchSectionViewSet, SportTypeViewSet
 
 app_name = 'api'
 
-router_v1 = DefaultRouter()
+router = DefaultRouter()
 
-router_v1.register('sport_types', SportTypeViewSet, basename='sport_types')
+# Эндпойнт для отображения всех видов спорта из БД
+router.register('sport_types', SportTypeViewSet, basename='sport_types')
+# Эндпойнт для поиска секций
+router.register('search_section', SearchSectionViewSet,
+                basename='search_section')
 
 urlpatterns = [
-    path('', include(router_v1.urls)),
+    path('', include(router.urls)),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
 ]
