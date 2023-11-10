@@ -1,9 +1,8 @@
 from django_filters.rest_framework import FilterSet, filters
+from sections.models import Section, SportType
 
-from sections.models import Section, SportType, AgeGroup
 
-
-class SectionFilter(FilterSet):
+class SearchFilter(FilterSet):
     """Фильтр по полям секции."""
     gender = filters.CharFilter(lookup_expr='startswith')
     sport_type = filters.ModelChoiceFilter(
@@ -33,3 +32,15 @@ class SectionFilter(FilterSet):
     class Meta:
         model = Section
         fields = ('gender', 'sport_type', 'age_group', 'price', 'address')
+
+
+class SportTypeFilter(FilterSet):
+    """Фильтр по видам спорта."""
+    sport_type = filters.ModelChoiceFilter(
+        queryset=SportType.objects.all(),
+        field_name='title'
+    )
+
+    class Meta:
+        model = SportType
+        fields = ('sport_type', )
