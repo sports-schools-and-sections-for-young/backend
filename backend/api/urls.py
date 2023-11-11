@@ -20,11 +20,11 @@ schema_view = get_schema_view(
 
 router = DefaultRouter()
 
-# Эндпойнт для отображения всех видов спорта
-router.register('sport_types', SportTypeViewSet, basename='sport_types')
 # Эндпойнт для поиска секций
 router.register('search_sections', SearchSectionViewSet,
                 basename='search_sections')
+# Эндпойнт для отображения всех видов спорта
+router.register('sport_types', SportTypeViewSet, basename='sport_types')
 
 urlpatterns = [
     path('', include(router.urls)),

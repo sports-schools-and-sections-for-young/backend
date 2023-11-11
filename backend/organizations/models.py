@@ -1,11 +1,7 @@
+from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator, RegexValidator)
 from django.db import models
-
-GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
-)
 
 
 class Address(models.Model):
@@ -139,7 +135,7 @@ class SportOrganization(models.Model):
 
 
 class Order(models.Model):
-    """Модель заявки."""
+    """Модель заявки в спортшколу."""
     sport_organization = models.ForeignKey(
         SportOrganization,
         verbose_name='Спортивная школа',
@@ -165,7 +161,7 @@ class Order(models.Model):
     gender = models.CharField(
         verbose_name='Пол ребенка',
         max_length=7,
-        choices=GENDER_CHOICES,
+        choices=settings.GENDER_CHOICES,
         blank=False
     )
     phone = models.CharField(

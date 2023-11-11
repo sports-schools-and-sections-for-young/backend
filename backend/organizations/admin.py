@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 
 from .models import (Address, Order, PhoneNumber, PhoneOfOrganization, Rewiev,
@@ -8,14 +9,14 @@ from .models import (Address, Order, PhoneNumber, PhoneOfOrganization, Rewiev,
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('index', 'city', 'metro', 'district', 'street', 'house')
     list_filter = ('index', 'city', 'metro', 'district', 'street', 'house')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(SportOrganization)
 class SportOrganizationAdmin(admin.ModelAdmin):
     list_display = ('title', 'address', 'email', 'site', 'description')
     list_filter = ('title', 'address', 'email', 'site')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(Order)
@@ -23,14 +24,14 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('sport_organization', 'fio', 'age', 'gender', 'phone',
                     'comment')
     list_filter = ('sport_organization', 'fio', 'age', 'gender', 'phone')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(PhoneNumber)
 class PhoneNumberAdmin(admin.ModelAdmin):
     list_display = ('value', 'comment')
     list_filter = ('value', )
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(PhoneOfOrganization)
@@ -41,6 +42,6 @@ class PhoneOfOrganizationAdmin(admin.ModelAdmin):
 
 @admin.register(Rewiev)
 class RewievAdmin(admin.ModelAdmin):
-    list_display = ('comment', 'date_and_time', 'rating', 'sport_school')
+    list_display = ('date_and_time', 'comment', 'rating', 'sport_school')
     list_filter = ('date_and_time', 'rating', 'sport_school')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
