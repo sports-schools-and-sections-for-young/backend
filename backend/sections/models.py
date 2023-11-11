@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
-                                    MinValueValidator)
+                                    MinValueValidator, RegexValidator)
 from django.db import models
 from organizations.models import Address, PhoneNumber, SportOrganization
 
@@ -125,7 +125,11 @@ class Trainer(models.Model):
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
+            MinLengthValidator(5, message='Минимум 5 символов'),
+            RegexValidator(
+                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
+                message='Неправильный формат ФИО.'
+            ),
         ],
         blank=False
     )

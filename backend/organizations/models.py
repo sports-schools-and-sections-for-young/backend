@@ -146,7 +146,11 @@ class Order(models.Model):
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
+            MinLengthValidator(5, message='Минимум 5 символов'),
+            RegexValidator(
+                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
+                message='Неправильный формат ФИО.'
+            ),
         ],
         blank=False
     )
