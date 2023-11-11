@@ -1,12 +1,8 @@
+from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator)
 from django.db import models
 from organizations.models import Address, PhoneNumber, SportOrganization
-
-GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
-)
 
 
 class SportType(models.Model):
@@ -53,7 +49,7 @@ class AgeGroup(models.Model):
 
 
 class Section(models.Model):
-    """Модель секции."""
+    """Модель секции спортшколы."""
     sport_organization = models.ForeignKey(
         SportOrganization,
         verbose_name='Спортивная школа',
@@ -71,7 +67,7 @@ class Section(models.Model):
     gender = models.CharField(
         verbose_name='Пол детей',
         max_length=7,
-        choices=GENDER_CHOICES,
+        choices=settings.GENDER_CHOICES,
         blank=True
     )
     sport_type = models.ForeignKey(
@@ -124,7 +120,7 @@ class Section(models.Model):
 
 
 class Trainer(models.Model):
-    """Модель для тренера."""
+    """Модель тренера спортшколы."""
     fio = models.CharField(
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
@@ -195,7 +191,7 @@ class DayOfWeek(models.Model):
 
 
 class Shedule(models.Model):
-    """Модель расписания."""
+    """Модель расписания секции."""
     section = models.ForeignKey(
         Section,
         verbose_name='Секция',

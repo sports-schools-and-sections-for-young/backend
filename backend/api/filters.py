@@ -5,7 +5,7 @@ from sections.models import Section, SportType
 class SearchSectionFilter(FilterSet):
     """
     Фильтр для поиска секций по следующим полям: пол ребенка, вид спорта,
-    возраст ребенка, стоимость занятий, адресу секции.
+    возраст ребенка, стоимость занятий, адрес секции.
     """
     age_group = filters.NumberFilter(method='get_age_group')
     price = filters.NumberFilter(method='get_price')

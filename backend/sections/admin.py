@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 
 from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
@@ -23,14 +24,14 @@ class SectionAdmin(admin.ModelAdmin):
                     'age_group', 'address', 'aviable', 'price')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
                    'age_group', 'address', 'aviable', 'price')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(Trainer)
 class TrainerAdmin(admin.ModelAdmin):
     list_display = ('fio', 'info', 'photo')
     list_filter = ('fio', )
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(SectionTrainer)
@@ -65,4 +66,4 @@ class PhoneOfSectionAdmin(admin.ModelAdmin):
 class PhotoOfSectionAdmin(admin.ModelAdmin):
     list_display = ('section', )
     list_filter = ('section', )
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
