@@ -50,8 +50,8 @@ class SheduleAdmin(admin.ModelAdmin):
     list_display = ('section', 'get_days', 'time_from', 'time_until')
     list_filter = ('section', DayOfWeekFilter)
 
+    # Метод для отображения дней недели в админке
     def get_days(self, obj):
-        """Метод для отображения дней недели в админке."""
         return ", ".join([day.title for day in obj.day.all()])
 
 

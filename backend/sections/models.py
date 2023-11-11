@@ -20,7 +20,6 @@ class SportType(models.Model):
     class Meta:
         verbose_name = "Вид спорта"
         verbose_name_plural = "Виды спорта"
-        ordering = ('id', )
 
     def __str__(self):
         return self.title
@@ -48,7 +47,6 @@ class AgeGroup(models.Model):
     class Meta:
         verbose_name = "Возрастная группа"
         verbose_name_plural = "Возрастные группы"
-        ordering = ('id', )
 
     def __str__(self):
         return f'С {self.year_from} до {self.year_until} лет'
@@ -149,7 +147,6 @@ class Trainer(models.Model):
     class Meta:
         verbose_name = 'Тренер'
         verbose_name_plural = 'Тренера'
-        ordering = ('id', )
 
     def __str__(self):
         return self.fio
@@ -222,7 +219,6 @@ class Shedule(models.Model):
     class Meta:
         verbose_name = 'Расписание'
         verbose_name_plural = 'Расписания'
-        ordering = ('id', )
 
     def __str__(self):
         return f'{self.section.title}'
@@ -268,7 +264,6 @@ class PhotoOfSection(models.Model):
     class Meta:
         verbose_name = 'Фотография секции'
         verbose_name_plural = 'Фотографии секции'
-        ordering = ('id', )
 
     def __str__(self):
         return f'Фото секции {self.section.title}'

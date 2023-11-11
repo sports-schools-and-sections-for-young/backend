@@ -4,7 +4,7 @@ from .models import DayOfWeek
 
 
 class DayOfWeekFilter(admin.SimpleListFilter):
-    """Поиск в админке по дням недели для расписания."""
+    """Поиск в админке по дням недели."""
     title = 'День недели'
     parameter_name = 'day'
 

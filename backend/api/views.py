@@ -18,7 +18,7 @@ class SearchSectionViewSet(ModelViewSet):
 
 
 class SportTypeViewSet(ModelViewSet):
-    """Вьюсет для отображения всех видов спорта из БД."""
+    """Вьюсет для отображения всех видов спорта."""
     http_method_names = ('get', )
     queryset = SportType.objects.all()
     serializer_class = SportTypeSerializer

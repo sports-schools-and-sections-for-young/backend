@@ -267,7 +267,6 @@ class Rewiev(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('id', )
 
     def __str__(self):
         return f'Отзыв о спортшколе {self.sport_school.title}'
