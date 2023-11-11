@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'django_filters',
+    'drf_yasg',
     'api.apps.ApiConfig',
     'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
