@@ -10,12 +10,14 @@ GENDER_CHOICES = (
 
 class Address(models.Model):
     """Модель адреса секции или спортшколы."""
-    index = models.PositiveIntegerField(
+    index = models.CharField(
         verbose_name='Индекс',
+        max_length=6,
         validators=[
+            MinLengthValidator(5, message='Минимум 5 символов'),
             RegexValidator(
                 regex=r'^\d{6}$',
-                message='Неправильный формат индекса'
+                message='Индекс может содержать только цифры.'
             ),
         ],
         blank=False
@@ -60,6 +62,11 @@ class Address(models.Model):
         ],
         blank=False
     )
+    full_address = models.CharField(
+        verbose_name='Полный адрес',
+        max_length=350,
+        blank=True
+    )
 
     class Meta:
         verbose_name = 'Адрес'
@@ -69,6 +76,11 @@ class Address(models.Model):
     def __str__(self):
         return (f'{self.index}, {self.city}, {self.district}, {self.street}, '
                 f'{self.house}')
+
+    def save(self, *args, **kwargs):
+        self.full_address = (f'{self.index} {self.city} {self.metro} '
+                             f'{self.district} {self.street} {self.house}')
+        super().save(*args, **kwargs)
 
 
 class SportOrganization(models.Model):
