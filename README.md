@@ -1,7 +1,5 @@
 ## СпортХаб - платформа для объединения спортивных школ и секций для молодежи
 
-***
-
 [![SportHub workflow](https://github.com/sports-schools-and-sections-for-young/backend/actions/workflows/main.yml/badge.svg)](https://github.com/sports-schools-and-sections-for-young/backend/actions/workflows/main.yml)
 
 ### 1. Локальный запуск приложения
