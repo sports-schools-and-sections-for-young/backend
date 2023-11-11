@@ -26,8 +26,7 @@ class SearchSectionFilter(FilterSet):
 
     # Фильтр по адресу секции
     def get_address(self, queryset, name, value):
-        search_list = value.split()
-        for item in search_list:
+        for item in value.split():
             queryset &= queryset.filter(
                 address__full_address__icontains=item)
         return queryset
