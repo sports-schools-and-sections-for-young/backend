@@ -23,7 +23,11 @@ class SearchSectionFilter(FilterSet):
         return queryset.filter(price__gte=0, price__lte=value)
 
     def get_address(self, queryset, name, value):
-        return queryset.filter(address__full_address__icontains=value)
+        search_list = value.split()
+        for item in search_list:
+            queryset &= queryset.filter(
+                address__full_address__icontains=item)
+        return queryset
 
 
 class SportTypeFilter(FilterSet):
