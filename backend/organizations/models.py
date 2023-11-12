@@ -237,7 +237,7 @@ class PhoneOfOrganization(models.Model):
         return f'Телефон спортшколы {self.sport_school}'
 
 
-class Rewiev(models.Model):
+class Review(models.Model):
     """Модель отзыва о спортшколе."""
     comment = models.CharField(
         verbose_name='Текст отзыва',
