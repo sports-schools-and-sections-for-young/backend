@@ -8,6 +8,20 @@ GENDER_CHOICES = (
 )
 
 
+# class Location(models.Model):
+#     latitude = models.DecimalField(max_digits=9, decimal_places=6,
+#                                    verbose_name='широта')
+#     longitude = models.DecimalField(max_digits=9, decimal_places=6,
+#                                     verbose_name='долгота')
+
+#     class Meta:
+#         verbose_name = 'Координаты'
+#         verbose_name_plural = 'Координаты'
+
+#     def __str__(self):
+#         return f'{self.latitude}, {self.longitude}'
+
+
 class Address(models.Model):
     """Модель адреса секции или спортшколы."""
     index = models.PositiveIntegerField(
@@ -60,6 +74,7 @@ class Address(models.Model):
         ],
         blank=False
     )
+    location = models.TextField()
 
     class Meta:
         verbose_name = 'Адрес'
@@ -68,7 +83,7 @@ class Address(models.Model):
 
     def __str__(self):
         return (f'{self.index}, {self.city}, {self.district}, {self.street}, '
-                f'{self.house}')
+                f'{self.house}, {self.location}')
 
 
 class SportOrganization(models.Model):
