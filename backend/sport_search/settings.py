@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
     # Аутентификация пользователей на основе токенов
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.TokenAuthentication', ),
     # Для фильтров используем библиотеку django-filter
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend'),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
 }
 
 DJOSER = {
