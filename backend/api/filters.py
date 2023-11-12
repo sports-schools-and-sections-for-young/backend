@@ -1,39 +1,7 @@
 from django_filters.rest_framework import FilterSet, filters
-from sections.models import Section, SportType, Address
-import django_filters
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.measure import D
+import math
 
-
-class LocationFilter(django_filters.FilterSet):
-    latitude = django_filters.NumberFilter(field_name='location',
-                                           method='filter_latitude')
-    longitude = django_filters.NumberFilter(field_name='location',
-                                            method='filter_longitude')
-    search_radius = filters.NumberFilter(field_name='location',
-                                         method='filter_radius')
-
-    def filter_latitude(self, queryset, name, value):
-        if value:
-            return queryset.filter(location__y=value)
-        return queryset
-
-    def filter_longitude(self, queryset, name, value):
-        if value:
-            return queryset.filter(location__x=value)
-        return queryset
-
-    def filter_radius(self, queryset, name, value):
-        lon = self.filter_longitude()
-        lat = self.filter_longitude()
-        queryset = queryset.annotate(distance=Distance('location',
-                                                       (lon, lat)))
-        queryset = queryset.filter(distance__lte=D(km=value))
-        return queryset
-
-    class Meta:
-        model = Address
-        fields = ['location']
+from sections.models import Section, SportType
 
 
 class SearchFilter(FilterSet):
@@ -61,11 +29,42 @@ class SearchFilter(FilterSet):
         field_name='price',
         lookup_expr='lte'
     )
-    # address = filters.CharFilter
+    address = filters.CharFilter(method='filter_radius')
 
     class Meta:
         model = Section
-        fields = ('gender', 'sport_type', 'age_group', 'price')
+        fields = ('gender', 'sport_type', 'age_group', 'price', 'address')
+
+    def haversin(lat1, lon1, lat2, lon2):
+        earth_radius = 6371
+        lat1_rad = math.radians(lat1)
+        lon1_rad = math.radians(lon1)
+        lat2_rad = math.radians(lat2)
+        lon2_rad = math.radians(lon2)
+        delta_lat = lat2_rad - lat1_rad
+        delta_lon = lon2_rad - lon1_rad
+        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+        distance = earth_radius * c
+
+        return distance
+
+    def filter_radius(self, queryset, name, value):
+        queryset = Section.objects.all()
+        lat, lon = value.split(',')
+        lat = float(lat),
+        lon = float(lon)
+        queryset = Section.objects.all()
+        for item in queryset:
+            lat_1, lon_1 = (item.address.location).split(',')
+            lat_1 = float(lat_1)
+            lon_1 = float(lon_1)
+            distance = self.haversine(lat, lon, lat_1, lon_1)
+            if distance <= 1:
+                return queryset.filter(address_location=item)
+            return queryset
+        return queryset
 
 
 class SportTypeFilter(FilterSet):
