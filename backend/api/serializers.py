@@ -29,7 +29,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     age_group = AgeGroupSerializer()
     address = AddressSerializer()
     rating = serializers.SerializerMethodField()
-    review_count = serializers.SerializerMethodField()
+    review_amount = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
@@ -42,7 +42,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
             return rating.aggregate(Avg('rating'))['rating__avg']
 
     # Подсчет количества отзывов
-    def get_review_count(self, obj):
+    def get_review_amount(self, obj):
         return Review.objects.filter(
             sport_school=obj.sport_organization
         ).count()
