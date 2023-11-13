@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 
 from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
-                     Section, SectionTrainer, Schedule, SportType, Trainer)
+                     Schedule, Section, SectionTrainer, SportType, Trainer)
 from .utils import DayOfWeekFilter
 
 

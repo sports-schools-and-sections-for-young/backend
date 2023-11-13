@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from organizations.models import Review
 from rest_framework import serializers
-from sections.models import Address, AgeGroup, Section, SportType, Schedule
+from sections.models import Address, AgeGroup, Schedule, Section, SportType
 
 
 class AgeGroupSerializer(serializers.ModelSerializer):
