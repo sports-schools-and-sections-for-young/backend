@@ -8,6 +8,9 @@ class SearchSectionFilter(FilterSet):
     возраст ребенка, стоимость занятий, адрес секции.
     """
     age_group = filters.NumberFilter(method='get_age_group')
+    sport_type = filters.ModelMultipleChoiceFilter(
+        queryset=SportType.objects.all()
+    )
     price = filters.NumberFilter(method='get_price')
     address = filters.CharFilter(method='get_address')
 
