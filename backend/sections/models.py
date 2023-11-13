@@ -194,7 +194,7 @@ class DayOfWeek(models.Model):
         return self.title
 
 
-class Shedule(models.Model):
+class Schedule(models.Model):
     """Модель расписания секции."""
     section = models.ForeignKey(
         Section,

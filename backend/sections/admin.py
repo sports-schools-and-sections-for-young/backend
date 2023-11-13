@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 
 from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
-                     Section, SectionTrainer, Shedule, SportType, Trainer)
+                     Schedule, Section, SectionTrainer, SportType, Trainer)
 from .utils import DayOfWeekFilter
 
 
@@ -46,12 +46,12 @@ class DayOfWeekAdmin(admin.ModelAdmin):
     list_filter = ('title', )
 
 
-@admin.register(Shedule)
-class SheduleAdmin(admin.ModelAdmin):
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
     list_display = ('section', 'get_days', 'time_from', 'time_until')
     list_filter = ('section', DayOfWeekFilter)
 
-    # Метод для отображения дней недели в админке
+    # Отображение дней недели секции в админке
     def get_days(self, obj):
         return ", ".join([day.title for day in obj.day.all()])
 
