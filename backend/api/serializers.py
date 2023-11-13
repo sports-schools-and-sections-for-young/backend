@@ -20,17 +20,6 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('index', 'city', 'metro', 'district', 'street', 'house')
 
 
-class ScheduleSerializer(serializers.ModelSerializer):
-    """Сериализатор для отображения расписания секции."""
-    day = serializers.StringRelatedField(many=True)
-    time_from = serializers.TimeField(format='%H:%M')
-    time_until = serializers.TimeField(format='%H:%M')
-
-    class Meta:
-        model = Schedule
-        fields = ('day', 'time_from', 'time_until')
-
-
 class SearchSectionSerializer(serializers.ModelSerializer):
     """Сериализатор для поиска секций."""
     sport_organization = serializers.CharField(
@@ -63,13 +52,13 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     # Отображение расписания секции
     def get_schedule(self, obj):
         schedules = Schedule.objects.filter(section=obj)
-        days = []
-        time = ""
+        days_of_week = []
+        times = ""
         for schedule in schedules:
-            days = ', '.join([day.title for day in schedule.day.all()])
-            time = (f"{schedule.time_from.strftime('%H:%M')} - "
-                    f"{schedule.time_until.strftime('%H:%M')}")
-        return {'days': days, 'time': time}
+            days_of_week = ', '.join([day.title for day in schedule.day.all()])
+            times = (f"{schedule.time_from.strftime('%H:%M')} - "
+                     f"{schedule.time_until.strftime('%H:%M')}")
+        return {'days': days_of_week, 'time': times}
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
