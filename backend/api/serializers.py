@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from organizations.models import Review
 from rest_framework import serializers
-from sections.models import Address, AgeGroup, Section, SportType
+from sections.models import Address, AgeGroup, Section, SportType, Schedule
 
 
 class AgeGroupSerializer(serializers.ModelSerializer):
@@ -20,6 +20,17 @@ class AddressSerializer(serializers.ModelSerializer):
         fields = ('index', 'city', 'metro', 'district', 'street', 'house')
 
 
+class ScheduleSerializer(serializers.ModelSerializer):
+    """Сериализатор для отображения расписания секции."""
+    day = serializers.StringRelatedField(many=True)
+    time_from = serializers.TimeField(format='%H:%M')
+    time_until = serializers.TimeField(format='%H:%M')
+
+    class Meta:
+        model = Schedule
+        fields = ('day', 'time_from', 'time_until')
+
+
 class SearchSectionSerializer(serializers.ModelSerializer):
     """Сериализатор для поиска секций."""
     sport_organization = serializers.CharField(
@@ -30,6 +41,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
     rating = serializers.SerializerMethodField()
     review_amount = serializers.SerializerMethodField()
+    schedule = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
@@ -39,13 +51,25 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     def get_rating(self, obj):
         rating = Review.objects.filter(sport_school=obj.sport_organization)
         if rating.exists():
-            return rating.aggregate(Avg('rating'))['rating__avg']
+            rating_avg = rating.aggregate(Avg('rating'))['rating__avg']
+            return round(rating_avg, 2)
 
     # Подсчет количества отзывов
     def get_review_amount(self, obj):
         return Review.objects.filter(
             sport_school=obj.sport_organization
         ).count()
+
+    # Отображение расписания секции
+    def get_schedule(self, obj):
+        schedules = Schedule.objects.filter(section=obj)
+        days = []
+        time = ""
+        for schedule in schedules:
+            days = ', '.join([day.title for day in schedule.day.all()])
+            time = (f"{schedule.time_from.strftime('%H:%M')} - "
+                    f"{schedule.time_until.strftime('%H:%M')}")
+        return {'days': days, 'time': time}
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
