@@ -8,7 +8,7 @@ app_name = 'api'
 router_v1 = DefaultRouter()
 
 router_v1.register('sport_types', SportTypeViewSet, basename='sport_types')
-router_v1.register('section_search', SearchListViewSet, basename='searcing')
+router_v1.register('section_searchs', SearchListViewSet, basename='searching')
 
 urlpatterns = [
     path('', include(router_v1.urls)),

@@ -1,3 +1,4 @@
+import math
 from rest_framework import serializers
 from sections.models import SportType
 from django.db.models import Avg, Count
@@ -53,6 +54,22 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ['street', 'house', 'location']
 
+class ShortSectionSerializer(serializers.ModelSerializer):
+    # rating = serializers.SerializerMethodField()
+    # rating_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Section
+        fields = ['title']        
+
+
+class SheduleSerializer(serializers.ModelSerializer):
+    """Сериалализатор для расписания."""
+
+    class Meta:
+        model = Shedule
+        fields = '__all__'
+
 
 class SectionSerializer(serializers.ModelSerializer):
     """Сериализатор для секций: вид спорта, пол, адрес, цена."""
@@ -62,11 +79,13 @@ class SectionSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     rating_count = serializers.SerializerMethodField()
     address = AddressSerializer()
+    shedule = serializers.SerializerMethodField()
+    section = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
         fields = ['sport_type', 'age_group', 'gender', 'aviable', 'price',
-                  'address', 'rating', 'rating_count']
+                  'address', 'rating_count', 'section', 'rating', 'shedule', 'rating_count']
 
     def get_rating(self, obj):
         rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
@@ -78,28 +97,42 @@ class SectionSerializer(serializers.ModelSerializer):
         if rating.exists():
             return rating.count()
 
+    def get_shedule(self, obj):
+        shedule = Shedule.objects.filter(section=obj.id)
+        if shedule:
+            return shedule.values()
+        return Shedule.objects.all().values()
 
-class SearchSerializer(serializers.ModelSerializer):
-    rating = serializers.ReadOnlyField()
-    sport_organization = serializers.ReadOnlyField()
+    def haversine(lat1, lon1, lat2, lon2):
+        earth_radius = 6371
+        lat1_rad = math.radians(lat1)
+        lon1_rad = math.radians(lon1)
+        lat2_rad = math.radians(lat2)
+        lon2_rad = math.radians(lon2)
+        delta_lat = lat2_rad - lat1_rad
+        delta_lon = lon2_rad - lon1_rad
+        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = earth_radius * c
+        return distance
 
-    class Meta:
-        model = Section
-        fields = ['sport_organization', 'rating']
-
-
-class SheduleSerializer(serializers.ModelSerializer):
-    """Сериалализатор для расписания."""
-
-    class Meta:
-        model = Shedule
-        fields = '__all__'
-
-
-
-# class SportOrganizationSerializer(serializers.ModelSerializer):
-#     """Сериализатор для спртивных организаций(вспомогательный)."""
-
-#     class Meta:
-#         model = SportOrganization
-#         fields = ['title', 'address']
+    def get_section(self, obj):
+        section = Section.objects.all()
+        request = self.context['request']
+        radius = request.query_params.get('radius')
+        location = request.query_params.get('location')
+        print(request)
+        lat, lon = location.split(',')
+        lon = float(lon)
+        lat = float(lat)
+        radius = int(radius)
+        for obj in section:
+            lat_1, lon_1 = (obj.address.location).split(',')
+            lat_1 = float(lat_1)
+            lon_1 = float(lon_1)
+            distance = self.haversine(lat, lon, lat_1, lon_1)
+            if distance <= radius:
+                serializer = ShortSectionSerializer(
+                    obj, context={'request': request}, many=False
+                )
+        return serializer.data
