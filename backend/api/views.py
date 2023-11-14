@@ -1,9 +1,4 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import Point
 from rest_framework.permissions import (
     IsAdminUser,
     IsAuthenticatedOrReadOnly,
@@ -38,9 +33,9 @@ class ListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class SearchListViewSet(ListViewSet):
+    """Вьюсет для отображения секций в поиске."""
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
-#     # filter_class = SearchFilter
-
+    filter_class = SearchFilter

@@ -52,13 +52,15 @@ class SheduleSerializer(serializers.ModelSerializer):
 
 
 class ShortSectionSerializer(serializers.ModelSerializer):
+    """Сериализатор для выдаче полей в поиске."""
     rating = serializers.SerializerMethodField()
     rating_count = serializers.SerializerMethodField()
     location = serializers.ReadOnlyField(source='address.location')
+    distance = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
-        fields = ['title', 'rating', 'rating_count', 'location']
+        fields = ['title', 'rating', 'rating_count', 'location', 'distance']
 
     def get_rating(self, obj):
         rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
@@ -70,14 +72,34 @@ class ShortSectionSerializer(serializers.ModelSerializer):
         if rating.exists():
             return rating.count()
 
+    def get_distance(self, obj):
+        request = self.context['request']
+        location = request.query_params.get['location']
+        lat, lon = location.split(',')
+        lat = float(lat)
+        lon = float(lon)
+        location_1 = obj.address.location
+        lat_1, lon_1 = location_1.split(',')
+        lat_1 = float(lat_1)
+        lon_1 = float(lon_1)
+        earth_radius = 6371
+        lat1_rad = math.radians(lat_1)
+        lon1_rad = math.radians(lon_1)
+        lat2_rad = math.radians(lat)
+        lon2_rad = math.radians(lon)
+        delta_lat = lat2_rad - lat1_rad
+        delta_lon = lon2_rad - lon1_rad
+        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(
+            lat2_rad) * math.sin(delta_lon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = earth_radius * c
+        return distance
+
 
 class SectionSerializer(serializers.ModelSerializer):
     """Сериализатор для секций: вид спорта, пол, адрес, цена."""
-    # location = serializers.ReadOnlyField(source='address.location')
     sport_type = serializers.ReadOnlyField(source='sport_type.title')
     age_group = AgeGroupSerializer()
-    # rating = serializers.SerializerMethodField()
-    # rating_count = serializers.SerializerMethodField()
     address = AddressSerializer()
     shedule = serializers.SerializerMethodField()
     section = serializers.SerializerMethodField()
@@ -94,7 +116,7 @@ class SectionSerializer(serializers.ModelSerializer):
             day = ' '.join(day.title for day in shedule.day.all())
         return {'day': day}
 
-    def haversine(lat1, lon1, lat2, lon2):
+    def haversine(sef, lat1, lon1, lat2, lon2):
         earth_radius = 6371
         lat1_rad = math.radians(lat1)
         lon1_rad = math.radians(lon1)
@@ -102,7 +124,8 @@ class SectionSerializer(serializers.ModelSerializer):
         lon2_rad = math.radians(lon2)
         delta_lat = lat2_rad - lat1_rad
         delta_lon = lon2_rad - lon1_rad
-        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon / 2) ** 2
+        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(
+            lat2_rad) * math.sin(delta_lon / 2) ** 2
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = earth_radius * c
         return distance
