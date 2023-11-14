@@ -1,5 +1,5 @@
 from django_filters.rest_framework import FilterSet, filters
-from sections.models import Section, SportType
+from sections.models import Section, SportType, DayOfWeek
 
 
 class SearchSectionFilter(FilterSet):
@@ -13,10 +13,15 @@ class SearchSectionFilter(FilterSet):
     )
     price = filters.NumberFilter(method='get_price')
     address = filters.CharFilter(method='get_address')
+    day = filters.ModelMultipleChoiceFilter(
+        field_name='schedule__day',  # Используйте schedule__day вместо day
+        queryset=DayOfWeek.objects.all()
+    )
+    time_range = filters.CharFilter(method='get_time_range')
 
     class Meta:
         model = Section
-        fields = ('gender', 'sport_type', 'age_group', 'price', 'address')
+        fields = ('gender', 'sport_type', 'age_group', 'price', 'address', 'day', 'time_range')
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):
@@ -32,6 +37,16 @@ class SearchSectionFilter(FilterSet):
         for item in value.split():
             queryset = queryset.filter(
                 address__full_address__icontains=item)
+        return queryset
+
+    # Фильтр по времени
+    def get_time_range(self, queryset, name, value):
+        time_from, time_until = map(str.strip, value.split('-'))
+
+        queryset = queryset.filter(
+            schedule__time_from__gte=time_from,
+            schedule__time_until__lte=time_until
+        )
         return queryset
 
 
