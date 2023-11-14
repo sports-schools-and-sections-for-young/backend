@@ -116,7 +116,7 @@ class SectionSerializer(serializers.ModelSerializer):
             day = ' '.join(day.title for day in shedule.day.all())
         return {'day': day}
 
-    def haversine(sef, lat1, lon1, lat2, lon2):
+    def haversine(self, lat1, lon1, lat2, lon2):
         earth_radius = 6371
         lat1_rad = math.radians(lat1)
         lon1_rad = math.radians(lon1)
