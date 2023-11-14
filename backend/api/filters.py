@@ -1,5 +1,4 @@
 from django_filters.rest_framework import FilterSet, filters
-import math
 
 from sections.models import Section, SportType
 
@@ -29,28 +28,10 @@ class SearchFilter(FilterSet):
         field_name='price',
         lookup_expr='lte'
     )
-    # address = filters.CharFilter(method='filter_radius')
 
     class Meta:
         model = Section
         fields = ('gender', 'sport_type', 'age_group', 'price')
-
-
-    def filter_radius(self, queryset, name, value):
-        queryset = Section.objects.all()
-        lat, lon = value.split(',')
-        lat = float(lat),
-        lon = float(lon)
-        queryset = Section.objects.all()
-        for item in queryset:
-            lat_1, lon_1 = (item.address.location).split(',')
-            lat_1 = float(lat_1)
-            lon_1 = float(lon_1)
-            distance = self.haversine(lat, lon, lat_1, lon_1)
-            if distance <= 1:
-                return queryset.filter(address_location=item)
-            return queryset
-        return queryset
 
 
 class SportTypeFilter(FilterSet):

@@ -54,13 +54,24 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ['street', 'house', 'location']
 
+
 class ShortSectionSerializer(serializers.ModelSerializer):
-    # rating = serializers.SerializerMethodField()
-    # rating_count = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
+    rating_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
-        fields = ['title']        
+        fields = ['title', 'rating', 'rating_count', 'address']
+
+    def get_rating(self, obj):
+        rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
+        if rating.exists():
+            return rating.aggregate(Avg('rating'))['rating__avg']
+
+    def get_rating_count(self, obj):
+        rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
+        if rating.exists():
+            return rating.count()         
 
 
 class SheduleSerializer(serializers.ModelSerializer):
@@ -76,8 +87,8 @@ class SectionSerializer(serializers.ModelSerializer):
     # location = serializers.ReadOnlyField(source='address.location')
     sport_type = serializers.ReadOnlyField(source='sport_type.title')
     age_group = AgeGroupSerializer()
-    rating = serializers.SerializerMethodField()
-    rating_count = serializers.SerializerMethodField()
+    # rating = serializers.SerializerMethodField()
+    # rating_count = serializers.SerializerMethodField()
     address = AddressSerializer()
     shedule = serializers.SerializerMethodField()
     section = serializers.SerializerMethodField()
@@ -85,17 +96,7 @@ class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = ['sport_type', 'age_group', 'gender', 'aviable', 'price',
-                  'address', 'rating_count', 'section', 'rating', 'shedule', 'rating_count']
-
-    def get_rating(self, obj):
-        rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
-        if rating.exists():
-            return rating.aggregate(Avg('rating'))['rating__avg']
-
-    def get_rating_count(self, obj):
-        rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
-        if rating.exists():
-            return rating.count()
+                  'address', 'section', 'rating', 'shedule']
 
     def get_shedule(self, obj):
         shedule = Shedule.objects.filter(section=obj.id)
