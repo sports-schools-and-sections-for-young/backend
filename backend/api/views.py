@@ -1,6 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import (
-    IsAdminUser,
     IsAuthenticatedOrReadOnly,
     AllowAny
 )
@@ -11,7 +10,7 @@ from sections.models import (
     Section
 )
 
-from .filters import SportTypeFilter, SearchFilter
+from .filters import SportTypeFilter, SearchSectionFilter
 from .serializers import (
     SportTypeSerializer,
     SectionSerializer
@@ -19,10 +18,10 @@ from .serializers import (
 
 
 class SportTypeViewSet(viewsets.ModelViewSet):
-    """Вьюсет для отображения всех видов спорта из БД."""
+    """Вьюсет для отображения всех видов спорта."""
     queryset = SportType.objects.all()
     serializer_class = SportTypeSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, IsAdminUser)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = SportTypeFilter
     http_method_names = ('get', )
@@ -38,4 +37,4 @@ class SearchListViewSet(ListViewSet):
     serializer_class = SectionSerializer
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
-    filter_class = SearchFilter
+    filter_class = SearchSectionFilter

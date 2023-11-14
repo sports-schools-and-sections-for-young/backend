@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.contrib import admin
 
 from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
-                     Section, SectionTrainer, Shedule, SportType, Trainer)
+                     Schedule, Section, SectionTrainer, SportType, Trainer)
 from .utils import DayOfWeekFilter
 
 
@@ -23,14 +24,14 @@ class SectionAdmin(admin.ModelAdmin):
                     'age_group', 'address', 'aviable', 'price')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
                    'age_group', 'address', 'aviable', 'price')
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(Trainer)
 class TrainerAdmin(admin.ModelAdmin):
     list_display = ('fio', 'info', 'photo')
     list_filter = ('fio', )
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE
 
 
 @admin.register(SectionTrainer)
@@ -45,13 +46,13 @@ class DayOfWeekAdmin(admin.ModelAdmin):
     list_filter = ('title', )
 
 
-@admin.register(Shedule)
-class SheduleAdmin(admin.ModelAdmin):
+@admin.register(Schedule)
+class ScheduleAdmin(admin.ModelAdmin):
     list_display = ('section', 'get_days', 'time_from', 'time_until')
     list_filter = ('section', DayOfWeekFilter)
 
+    # Отображение дней недели секции в админке
     def get_days(self, obj):
-        """Метод для отображения дней недели в админке."""
         return ", ".join([day.title for day in obj.day.all()])
 
 
@@ -65,4 +66,4 @@ class PhoneOfSectionAdmin(admin.ModelAdmin):
 class PhotoOfSectionAdmin(admin.ModelAdmin):
     list_display = ('section', )
     list_filter = ('section', )
-    empty_value_display = '-пусто-'
+    empty_value_display = settings.EMPTY_VALUE

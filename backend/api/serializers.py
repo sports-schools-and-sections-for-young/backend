@@ -4,11 +4,27 @@ from django.db.models import Avg
 
 from sections.models import (
     Section,
-    Shedule,
+    Schedule,
     AgeGroup,
     SportType
 )
-from organizations.models import Rewiev, Address
+from organizations.models import Review, Address
+
+
+class AgeGroupSerializer(serializers.ModelSerializer):
+    """Сериализатор для возрастной группы."""
+
+    class Meta:
+        model = AgeGroup
+        fields = ('year_from', 'year_until')
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    """Сериализатор для адреса секции или спортшколы."""
+
+    class Meta:
+        model = Address
+        fields = ('metro', 'district', 'street', 'house', 'location')
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
@@ -23,7 +39,7 @@ class RewievSerializer(serializers.ModelSerializer):
     """Сериализатор для рейтинга."""
 
     class Meta:
-        model = Rewiev
+        model = Review
         fields = ['rating']
 
 
@@ -35,19 +51,11 @@ class AgeGroupSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AddressSerializer(serializers.ModelSerializer):
-    """ Сериализер для адреса спорт-школы(вспомогательный)."""
-
-    class Meta:
-        model = Address
-        fields = ['street', 'house', 'location']
-
-
-class SheduleSerializer(serializers.ModelSerializer):
+class ScheduleSerializer(serializers.ModelSerializer):
     """Сериалализатор для расписания."""
 
     class Meta:
-        model = Shedule
+        model = Schedule
         fields = '__all__'
 
 
@@ -63,12 +71,12 @@ class ShortSectionSerializer(serializers.ModelSerializer):
         fields = ['title', 'rating', 'rating_count', 'location', 'distance']
 
     def get_rating(self, obj):
-        rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
+        rating = Review.objects.filter(sport_school=obj.sport_organization)
         if rating.exists():
             return rating.aggregate(Avg('rating'))['rating__avg']
 
     def get_rating_count(self, obj):
-        rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
+        rating = Review.objects.filter(sport_school=obj.sport_organization)
         if rating.exists():
             return rating.count()
 
@@ -110,7 +118,7 @@ class SectionSerializer(serializers.ModelSerializer):
                   'address', 'section', 'shedule']
 
     def get_shedule(self, obj):
-        shedules = Shedule.objects.filter(section=obj)
+        shedules = Schedule.objects.filter(section=obj)
         day = []
         for shedule in shedules:
             day = ' '.join(day.title for day in shedule.day.all())

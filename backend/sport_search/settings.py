@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'django_filters',
+    'drf_yasg',
     'api.apps.ApiConfig',
     'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
@@ -144,18 +145,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        # Доступ только аутентифицированным пользователям
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        # Аутентификация пользователей на основе токенов
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-    'DEFAULT_FILTER_BACKENDS': [
-        # Для фильтров будем использовать библиотеку django-filter
-        'django_filters.rest_framework.DjangoFilterBackend'
-    ],
+    # Доступ только аутентифицированным пользователям
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated', ),
+    # Аутентификация пользователей на основе токенов
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework.authentication.TokenAuthentication', ),
+    # Для фильтров используем библиотеку django-filter
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
+}
+
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'HIDE_USERS': False,
+    'PERMISSIONS': {
+        'user_create': ('rest_framework.permissions.AllowAny', ),
+        'user_list': ('rest_framework.permissions.IsAdminUser', ),
+    }
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMPTY_VALUE = '-пусто-'
+
+GENDER_CHOICES = (
+    ('Man', 'Мужской'),
+    ('Woman', 'Женский'),
+)

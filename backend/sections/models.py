@@ -1,12 +1,8 @@
+from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
-                                    MinValueValidator)
+                                    MinValueValidator, RegexValidator)
 from django.db import models
 from organizations.models import Address, PhoneNumber, SportOrganization
-
-GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
-)
 
 
 class SportType(models.Model):
@@ -20,7 +16,6 @@ class SportType(models.Model):
     class Meta:
         verbose_name = "Вид спорта"
         verbose_name_plural = "Виды спорта"
-        ordering = ('id', )
 
     def __str__(self):
         return self.title
@@ -48,14 +43,13 @@ class AgeGroup(models.Model):
     class Meta:
         verbose_name = "Возрастная группа"
         verbose_name_plural = "Возрастные группы"
-        ordering = ('id', )
 
     def __str__(self):
         return f'С {self.year_from} до {self.year_until} лет'
 
 
 class Section(models.Model):
-    """Модель секции."""
+    """Модель секции спортшколы."""
     sport_organization = models.ForeignKey(
         SportOrganization,
         verbose_name='Спортивная школа',
@@ -73,7 +67,7 @@ class Section(models.Model):
     gender = models.CharField(
         verbose_name='Пол детей',
         max_length=7,
-        choices=GENDER_CHOICES,
+        choices=settings.GENDER_CHOICES,
         blank=True
     )
     sport_type = models.ForeignKey(
@@ -126,12 +120,16 @@ class Section(models.Model):
 
 
 class Trainer(models.Model):
-    """Модель для тренера."""
+    """Модель тренера спортшколы."""
     fio = models.CharField(
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
+            MinLengthValidator(5, message='Минимум 5 символов'),
+            RegexValidator(
+                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
+                message='Неправильный формат ФИО.'
+            ),
         ],
         blank=False
     )
@@ -149,7 +147,6 @@ class Trainer(models.Model):
     class Meta:
         verbose_name = 'Тренер'
         verbose_name_plural = 'Тренера'
-        ordering = ('id', )
 
     def __str__(self):
         return self.fio
@@ -197,8 +194,8 @@ class DayOfWeek(models.Model):
         return self.title
 
 
-class Shedule(models.Model):
-    """Модель расписания."""
+class Schedule(models.Model):
+    """Модель расписания секции."""
     section = models.ForeignKey(
         Section,
         verbose_name='Секция',
@@ -222,7 +219,6 @@ class Shedule(models.Model):
     class Meta:
         verbose_name = 'Расписание'
         verbose_name_plural = 'Расписания'
-        ordering = ('id', )
 
     def __str__(self):
         return f'{self.section.title}'
@@ -268,7 +264,6 @@ class PhotoOfSection(models.Model):
     class Meta:
         verbose_name = 'Фотография секции'
         verbose_name_plural = 'Фотографии секции'
-        ordering = ('id', )
 
     def __str__(self):
         return f'Фото секции {self.section.title}'

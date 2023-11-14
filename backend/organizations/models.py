@@ -1,35 +1,19 @@
+from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator, RegexValidator)
 from django.db import models
 
-GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
-)
-
-
-# class Location(models.Model):
-#     latitude = models.DecimalField(max_digits=9, decimal_places=6,
-#                                    verbose_name='широта')
-#     longitude = models.DecimalField(max_digits=9, decimal_places=6,
-#                                     verbose_name='долгота')
-
-#     class Meta:
-#         verbose_name = 'Координаты'
-#         verbose_name_plural = 'Координаты'
-
-#     def __str__(self):
-#         return f'{self.latitude}, {self.longitude}'
-
 
 class Address(models.Model):
     """Модель адреса секции или спортшколы."""
-    index = models.PositiveIntegerField(
+    index = models.CharField(
         verbose_name='Индекс',
+        max_length=6,
         validators=[
+            MinLengthValidator(5, message='Минимум 5 символов'),
             RegexValidator(
                 regex=r'^\d{6}$',
-                message='Неправильный формат индекса'
+                message='Индекс может содержать только цифры.'
             ),
         ],
         blank=False
@@ -84,6 +68,11 @@ class Address(models.Model):
     def __str__(self):
         return (f'{self.index}, {self.city}, {self.district}, {self.street}, '
                 f'{self.house}, {self.location}')
+
+    def save(self, *args, **kwargs):
+        self.full_address = (f'{self.index} {self.city} {self.metro} '
+                             f'{self.district} {self.street} {self.house}')
+        super().save(*args, **kwargs)
 
 
 class SportOrganization(models.Model):
@@ -142,7 +131,7 @@ class SportOrganization(models.Model):
 
 
 class Order(models.Model):
-    """Модель заявки."""
+    """Модель заявки в спортшколу."""
     sport_organization = models.ForeignKey(
         SportOrganization,
         verbose_name='Спортивная школа',
@@ -153,7 +142,11 @@ class Order(models.Model):
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
+            MinLengthValidator(5, message='Минимум 5 символов'),
+            RegexValidator(
+                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
+                message='Неправильный формат ФИО.'
+            ),
         ],
         blank=False
     )
@@ -168,7 +161,7 @@ class Order(models.Model):
     gender = models.CharField(
         verbose_name='Пол ребенка',
         max_length=7,
-        choices=GENDER_CHOICES,
+        choices=settings.GENDER_CHOICES,
         blank=False
     )
     phone = models.CharField(
@@ -240,7 +233,7 @@ class PhoneOfOrganization(models.Model):
         return f'Телефон спортшколы {self.sport_school}'
 
 
-class Rewiev(models.Model):
+class Review(models.Model):
     """Модель отзыва о спортшколе."""
     comment = models.CharField(
         verbose_name='Текст отзыва',
@@ -270,7 +263,6 @@ class Rewiev(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('id', )
 
     def __str__(self):
         return f'Отзыв о спортшколе {self.sport_school.title}'
