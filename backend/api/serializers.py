@@ -54,14 +54,22 @@ class AddressSerializer(serializers.ModelSerializer):
         model = Address
         fields = ['street', 'house', 'location']
 
+class SheduleSerializer(serializers.ModelSerializer):
+    """Сериалализатор для расписания."""
+
+    class Meta:
+        model = Shedule
+        fields = '__all__'
+
 
 class ShortSectionSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     rating_count = serializers.SerializerMethodField()
+    location = serializers.ReadOnlyField(source='address.location')
 
     class Meta:
         model = Section
-        fields = ['title', 'rating', 'rating_count', 'address']
+        fields = ['title', 'rating', 'rating_count', 'location']
 
     def get_rating(self, obj):
         rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
@@ -72,14 +80,6 @@ class ShortSectionSerializer(serializers.ModelSerializer):
         rating = Rewiev.objects.filter(sport_school=obj.sport_organization)
         if rating.exists():
             return rating.count()         
-
-
-class SheduleSerializer(serializers.ModelSerializer):
-    """Сериалализатор для расписания."""
-
-    class Meta:
-        model = Shedule
-        fields = '__all__'
 
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -96,13 +96,16 @@ class SectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = ['sport_type', 'age_group', 'gender', 'aviable', 'price',
-                  'address', 'section', 'rating', 'shedule']
+                  'address', 'section', 'shedule']
 
     def get_shedule(self, obj):
-        shedule = Shedule.objects.filter(section=obj.id)
-        if shedule:
-            return shedule.values()
-        return Shedule.objects.all().values()
+        shedules = Shedule.objects.filter(section=obj)
+        day = []
+        time = ""
+        for shedule in shedules:
+            day = ' '.join(day.title for day in shedule.day.all())
+            time = f'{shedule.time_from.strftime("%H:%M")}-{shedule.time_until.strftime("%H:%M")}'
+        return {'day': day, 'time': time}
 
     def haversine(lat1, lon1, lat2, lon2):
         earth_radius = 6371
@@ -122,18 +125,23 @@ class SectionSerializer(serializers.ModelSerializer):
         request = self.context['request']
         radius = request.query_params.get('radius')
         location = request.query_params.get('location')
-        print(request)
-        lat, lon = location.split(',')
-        lon = float(lon)
-        lat = float(lat)
-        radius = int(radius)
-        for obj in section:
-            lat_1, lon_1 = (obj.address.location).split(',')
-            lat_1 = float(lat_1)
-            lon_1 = float(lon_1)
-            distance = self.haversine(lat, lon, lat_1, lon_1)
-            if distance <= radius:
-                serializer = ShortSectionSerializer(
-                    obj, context={'request': request}, many=False
-                )
-        return serializer.data
+        # print(request)
+        # lat, lon = location.split(',')
+        # lon = float(lon)
+        # lat = float(lat)
+        # radius = int(radius)
+        # for obj in section:
+        #     lat_1, lon_1 = (obj.address.location).split(',')
+        #     lat_1 = float(lat_1)
+        #     lon_1 = float(lon_1)
+        #     distance = self.haversine(lat, lon, lat_1, lon_1)
+        #     if distance <= radius:
+        #         serializer = ShortSectionSerializer(
+        #             obj, context={'request': request}, many=False
+        #         )
+        # return serializer.data
+        return obj
+
+    def to_representation(self, instance):
+        return ShortSectionSerializer(
+            instance, context={'request': self.context.get('request')}).data
