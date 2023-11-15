@@ -24,7 +24,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Address
-        fields = ('metro', 'district', 'street', 'house', 'location')
+        fields = ('street', 'house', 'location')
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
