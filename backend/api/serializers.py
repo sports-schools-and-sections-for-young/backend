@@ -87,26 +87,25 @@ class ShortSectionSerializer(serializers.ModelSerializer):
     def get_distance(self, obj):
         request = self.context['request']
         location = request.query_params.get('location')
-        # lat, lon = location.split(',')
-        # lat = float(lat)
-        # lon = float(lon)
-        # location_1 = obj.address.location
-        # lat_1, lon_1 = location_1.split(',')
-        # lat_1 = float(lat_1)
-        # lon_1 = float(lon_1)
-        # earth_radius = 6371
-        # lat1_rad = math.radians(lat_1)
-        # lon1_rad = math.radians(lon_1)
-        # lat2_rad = math.radians(lat)
-        # lon2_rad = math.radians(lon)
-        # delta_lat = lat2_rad - lat1_rad
-        # delta_lon = lon2_rad - lon1_rad
-        # a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(
-        #     lat2_rad) * math.sin(delta_lon / 2) ** 2
-        # c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-        # distance = earth_radius * c
-        # return distance
-        return 0
+        lat, lon = location.split(',')
+        lat = float(lat)
+        lon = float(lon)
+        location_1 = obj.address.location
+        lat_1, lon_1 = location_1.split(',')
+        lat_1 = float(lat_1)
+        lon_1 = float(lon_1)
+        earth_radius = 6371
+        lat1_rad = math.radians(lat_1)
+        lon1_rad = math.radians(lon_1)
+        lat2_rad = math.radians(lat)
+        lon2_rad = math.radians(lon)
+        delta_lat = lat2_rad - lat1_rad
+        delta_lon = lon2_rad - lon1_rad
+        a = math.sin(delta_lat / 2) ** 2 + math.cos(lat1_rad) * math.cos(
+            lat2_rad) * math.sin(delta_lon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = earth_radius * c
+        return distance
 
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -145,22 +144,22 @@ class SectionSerializer(serializers.ModelSerializer):
     def get_section(self, obj):
         section = Section.objects.all()
         request = self.context['request']
-        # radius = request.query_params.get('radius')
-        # location = request.query_params.get('location')
+        radius = request.query_params.get('radius')
+        location = request.query_params.get('location')
         section_list = []
         for i in section:
             section_list.append(i)
-        # lat, lon = location.split(',')
-        # lon = float(lon)
-        # lat = float(lat)
-        # radius = int(radius)
-        # for obj in section:
-        #     lat_1, lon_1 = (obj.address.location).split(',')
-        #     lat_1 = float(lat_1)
-        #     lon_1 = float(lon_1)
-        #     distance = self.haversine(lat, lon, lat_1, lon_1)
-        #     if distance <= radius:
-        #         section_list.append(obj)
+        lat, lon = location.split(',')
+        lon = float(lon)
+        lat = float(lat)
+        radius = int(radius)
+        for obj in section:
+            lat_1, lon_1 = (obj.address.location).split(',')
+            lat_1 = float(lat_1)
+            lon_1 = float(lon_1)
+            distance = self.haversine(lat, lon, lat_1, lon_1)
+            if distance <= radius:
+                section_list.append(obj)
         serializer = ShortSectionSerializer(section_list,
                                             context={'request': request},
                                             many=True)
