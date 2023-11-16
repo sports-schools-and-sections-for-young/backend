@@ -21,7 +21,7 @@ class SearchSectionFilter(FilterSet):
 
     class Meta:
         model = Section
-        fields = ('gender', 'sport_type', 'age_group', 'price', 'address', 'day', 'time_range')
+        fields = ('gender', 'sport_type', 'age_group', 'price', 'address', 'day')
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):
