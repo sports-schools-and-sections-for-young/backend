@@ -5,7 +5,8 @@ from sections.models import DayOfWeek, Section, SportType
 class SearchSectionFilter(FilterSet):
     """
     Фильтр для поиска секций по следующим полям: пол ребенка, вид спорта,
-    возраст ребенка, стоимость занятий, адрес секции, день недели работы секции.
+    возраст ребенка, стоимость занятий, адрес секции, день недели работы
+    секции.
     """
     age_group = filters.NumberFilter(method='get_age_group')
     sport_type = filters.ModelMultipleChoiceFilter(
