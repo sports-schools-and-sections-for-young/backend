@@ -39,16 +39,6 @@ class SearchSectionFilter(FilterSet):
                 address__full_address__icontains=item)
         return queryset
 
-    # Фильтр по времени
-    def get_time_range(self, queryset, name, value):
-        time_from, time_until = map(str.strip, value.split('-'))
-
-        queryset = queryset.filter(
-            schedule__time_from__gte=time_from,
-            schedule__time_until__lte=time_until
-        )
-        return queryset
-
 
 class SportTypeFilter(FilterSet):
     """Фильтр по видам спорта."""
