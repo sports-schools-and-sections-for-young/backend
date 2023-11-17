@@ -1,0 +1,39 @@
+version: '3.8'
+
+volumes:
+  pg_data:
+  static:
+  media:
+
+
+services:
+  db:
+    image: postgres:13.10
+    env_file:
+      - ./.env
+    restart: always
+    volumes:
+      - /var/lib/postgresql/data/
+
+  backend:
+    image: sanya101/sport_search
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - static:/app/static/
+      - media:/app/media/
+
+  nginx:
+    image: nginx:1.22.1
+    ports:
+      - 8000:80
+    depends_on:
+      - db
+      - backend
+    restart: always
+    volumes:
+      - media:/var/html/media/
+      - static:/var/html/static/
