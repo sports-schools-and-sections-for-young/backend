@@ -1,21 +1,19 @@
+from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator, RegexValidator)
 from django.db import models
 
-GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
-)
-
 
 class Address(models.Model):
     """Модель адреса секции или спортшколы."""
-    index = models.PositiveIntegerField(
+    index = models.CharField(
         verbose_name='Индекс',
+        max_length=6,
         validators=[
+            MinLengthValidator(5, message='Минимум 5 символов'),
             RegexValidator(
                 regex=r'^\d{6}$',
-                message='Неправильный формат индекса'
+                message='Индекс может содержать только цифры.'
             ),
         ],
         blank=False
@@ -60,6 +58,11 @@ class Address(models.Model):
         ],
         blank=False
     )
+    full_address = models.CharField(
+        verbose_name='Полный адрес',
+        max_length=350,
+        blank=True
+    )
 
     class Meta:
         verbose_name = 'Адрес'
@@ -70,9 +73,19 @@ class Address(models.Model):
         return (f'{self.index}, {self.city}, {self.district}, {self.street}, '
                 f'{self.house}')
 
+    def save(self, *args, **kwargs):
+        self.full_address = (f'{self.index} {self.city} {self.metro} '
+                             f'{self.district} {self.street} {self.house}')
+        super().save(*args, **kwargs)
+
 
 class SportOrganization(models.Model):
-    """Модель спортшколы."""
+    """
+    Модель спортшколы.
+    Алгоритм добавления спортшколы: пользователь регистрируется на сайте со
+    следующими полями: логин, e-mail, имя, фамилия, пароль. Затем пользователь
+    авторизуется на сайте и в личном кабинете добавляет спортшколу.
+    """
     title = models.CharField(
         verbose_name='Название организации',
         max_length=255,
@@ -102,7 +115,7 @@ class SportOrganization(models.Model):
         unique=True,
         blank=False
     )
-    site = models.CharField(
+    site = models.URLField(
         verbose_name='Сайт или страничка в VK',
         max_length=255,
         blank=True
@@ -112,45 +125,17 @@ class SportOrganization(models.Model):
         max_length=20000,
         blank=False
     )
-    login = models.CharField(
-        verbose_name='Логин',
-        max_length=60,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
-            RegexValidator(
-                regex=r'^[a-z]+$',
-                message='Логин может содержать только символы '
-                        'английского алфавита.'
-            ),
-        ],
-        unique=True,
-        blank=False
-    )
-    password = models.CharField(
-        verbose_name='Пароль',
-        max_length=16,
-        validators=[
-            MinLengthValidator(8, message='Минимум 8 символов'),
-        ],
-        blank=False
-    )
 
     class Meta:
         verbose_name = 'Спортивная школа'
         verbose_name_plural = 'Спортивные школы'
-        constraints = [
-            models.UniqueConstraint(
-                fields=('email', 'login'),
-                name='unique_email_login'
-            )
-        ]
 
     def __str__(self):
         return self.title
 
 
 class Order(models.Model):
-    """Модель заявки."""
+    """Модель заявки в спортшколу."""
     sport_organization = models.ForeignKey(
         SportOrganization,
         verbose_name='Спортивная школа',
@@ -161,7 +146,11 @@ class Order(models.Model):
         verbose_name='Фамилия Имя Отчество',
         max_length=255,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
+            MinLengthValidator(5, message='Минимум 5 символов'),
+            RegexValidator(
+                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
+                message='Неправильный формат ФИО.'
+            ),
         ],
         blank=False
     )
@@ -176,7 +165,7 @@ class Order(models.Model):
     gender = models.CharField(
         verbose_name='Пол ребенка',
         max_length=7,
-        choices=GENDER_CHOICES,
+        choices=settings.GENDER_CHOICES,
         blank=False
     )
     phone = models.CharField(
@@ -248,7 +237,7 @@ class PhoneOfOrganization(models.Model):
         return f'Телефон спортшколы {self.sport_school}'
 
 
-class Rewiev(models.Model):
+class Review(models.Model):
     """Модель отзыва о спортшколе."""
     comment = models.CharField(
         verbose_name='Текст отзыва',
@@ -278,7 +267,6 @@ class Rewiev(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ('id', )
 
     def __str__(self):
         return f'Отзыв о спортшколе {self.sport_school.title}'
