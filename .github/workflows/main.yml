@@ -21,7 +21,7 @@ jobs:
       run: python -m flake8 backend/
 
   build_backend_and_push_to_docker_hub:
-    if: ${{ github.ref_name == 'develop' }}
+    if: ${{ github.ref_name == 'main' }}
     name: Push backend docker image to DockerHub
     runs-on: ubuntu-latest
     needs: backend_tests
@@ -40,10 +40,10 @@ jobs:
         with:
           context: ./backend/
           push: true
-          tags: ${{ secrets.DOCKER_PASSWORD }}/sport_search:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/sport_search:latest
 
   deploy:
-    if: ${{ github.ref_name == 'develop' }}
+    if: ${{ github.ref_name == 'main' }}
     name: Deploy project on remote server
     runs-on: ubuntu-latest
     needs: 
@@ -52,7 +52,7 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v3
     - name: Copy docker-compose.yml via ssh
-      uses: appleboy/scp-action@develop
+      uses: appleboy/scp-action@main
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
@@ -61,7 +61,7 @@ jobs:
         source: "docker-compose.yml"
         target: "sport_search"
     - name: Executing remote ssh commands to deploy
-      uses: appleboy/ssh-action@develop
+      uses: appleboy/ssh-action@main
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USER }}
