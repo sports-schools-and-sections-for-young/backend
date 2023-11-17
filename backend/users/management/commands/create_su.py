@@ -9,18 +9,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            SU_NAME = os.getenv('SU_NAME', 'admin')
-            SU_EMAIL = os.getenv('SU_EMAIL', 'admin@mail.ru')
-            SU_PASSWORD = os.getenv('SU_PASSWORD', 'pass')
-            if CustomUser.objects.filter(username=SU_NAME).exists():
+            su_name = os.getenv('SU_NAME', 'admin')
+            su_email = os.getenv('SU_EMAIL', 'admin@mail.ru')
+            su_password = os.getenv('SU_PASSWORD', 'pass')
+            if CustomUser.objects.filter(username=su_name).exists():
                 self.stdout.write(self.style.WARNING(
-                    f'Пользователь с логином {SU_NAME} уже существует.')
+                    f'Пользователь с логином {su_name} уже существует.')
                 )
                 return
             superuser = CustomUser.objects.create_superuser(
-                username=SU_NAME,
-                email=SU_EMAIL,
-                password=SU_PASSWORD,
+                username=su_name,
+                email=su_email,
+                password=su_password,
                 first_name='none',
                 last_name='none',
                 is_active=True,
@@ -28,8 +28,8 @@ class Command(BaseCommand):
             )
             superuser.save()
             self.stdout.write(self.style.SUCCESS(
-                f'Суперпользователь успешно создан (логин - {SU_NAME}, '
-                f'email - {SU_EMAIL}, пароль - {SU_PASSWORD}).'
+                f'Суперпользователь успешно создан (логин - {su_name}, '
+                f'email - {su_email}, пароль - {su_password}).'
             )
             )
         except Exception as error:
