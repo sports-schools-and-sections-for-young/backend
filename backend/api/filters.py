@@ -1,27 +1,33 @@
 from django_filters.rest_framework import FilterSet, filters
-from sections.models import Section, SportType, DayOfWeek
+from sections.models import DayOfWeek, Section, SportType
 
 
 class SearchSectionFilter(FilterSet):
     """
     Фильтр для поиска секций по следующим полям: пол ребенка, вид спорта,
-    возраст ребенка, стоимость занятий, адрес секции.
+    возраст ребенка, стоимость занятий, адрес секции, день недели работы
+    секции.
     """
     age_group = filters.NumberFilter(method='get_age_group')
     sport_type = filters.ModelMultipleChoiceFilter(
-        queryset=SportType.objects.all()
+        label='Вид спорта',
+        queryset=SportType.objects.all(),
+        field_name='sport_type__title',
+        to_field_name='title'
     )
     price = filters.NumberFilter(method='get_price')
     address = filters.CharFilter(method='get_address')
-    day = filters.ModelMultipleChoiceFilter(
-        field_name='schedule__day',  # Используйте schedule__day вместо day
-        queryset=DayOfWeek.objects.all()
+    day_of_week = filters.ModelMultipleChoiceFilter(
+        label='День недели',
+        queryset=DayOfWeek.objects.all(),
+        field_name='schedule__day__title',
+        to_field_name='title'
     )
-    time_range = filters.CharFilter(method='get_time_range')
 
     class Meta:
         model = Section
-        fields = ('gender', 'sport_type', 'age_group', 'price', 'address', 'day')
+        fields = ('gender', 'sport_type', 'age_group',
+                  'price', 'address', 'day_of_week')
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):

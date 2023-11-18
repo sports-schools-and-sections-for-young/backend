@@ -17,8 +17,12 @@ POSTGRES_PASSWORD=password
 DB_HOST=db
 DB_PORT=5432
 ALLOWED_HOSTS=127.0.0.1;localhost
+SU_NAME=admin
+SU_EMAIL=admin@mail.ru
+SU_PASSWORD=pass
 ```
-Сгенерировать секретный ключ и сохранить в переменной SECRET_KEY.
+Сгенерировать секретный ключ и сохранить в переменной SECRET_KEY.\
+SU_NAME, SU_EMAIL, SU_PASSWORD - данные суперпользователя.
 
 3. Для запуска приложения, необходимо перейти в папку backend, создать и активировать виртуальное окружение:
 ```
@@ -37,7 +41,12 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-6. Запустить сервер:
+6. Создать суперпользователя:
+```
+python manage.py create_su
+```
+
+7. Запустить сервер:
 ```
 python manage.py runserver
 ```
