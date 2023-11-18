@@ -41,7 +41,12 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-6. Запустить сервер:
+6. Создать суперпользователя:
+```
+python manage.py create_su
+```
+
+7. Запустить сервер:
 ```
 python manage.py runserver
 ```
