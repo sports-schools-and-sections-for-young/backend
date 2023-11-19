@@ -10,7 +10,7 @@ services:
       - db_data:/var/lib/postgresql/data/
 
   backend:
-    image: sanya101/food_backend
+    image: sanya101/sport_search_backend
     env_file:
       - ./.env
     depends_on:
@@ -21,7 +21,7 @@ services:
       - media:/app/media/
 
   frontend:
-    image: sanya101/food_frontend
+    image: sanya101/sport_search_frontend
     env_file:
       - ./.env
     depends_on:
