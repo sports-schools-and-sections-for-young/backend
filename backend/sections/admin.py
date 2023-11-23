@@ -21,9 +21,9 @@ class AgeGroupAdmin(admin.ModelAdmin):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('sport_organization', 'title', 'gender', 'sport_type',
-                    'age_group', 'address', 'aviable', 'price')
+                    'age_group', 'address', 'aviable', 'price', 'free_class')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
-                   'age_group', 'address', 'aviable', 'price')
+                   'age_group', 'address', 'aviable', 'price', 'free_class')
     empty_value_display = settings.EMPTY_VALUE
 
 
