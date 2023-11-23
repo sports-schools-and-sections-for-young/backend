@@ -109,6 +109,11 @@ class Section(models.Model):
         blank=False,
         default=0
     )
+    free_class = models.BooleanField(
+        verbose_name='Бесплатное пробное занятие',
+        default=False,
+        blank=True
+    )
 
     class Meta:
         verbose_name = 'Секция'
