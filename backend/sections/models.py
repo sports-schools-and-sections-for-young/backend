@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
-                                    MinValueValidator, RegexValidator)
+                                    MinValueValidator)
 from django.db import models
 from organizations.models import Address, PhoneNumber, SportOrganization
 
@@ -117,62 +117,6 @@ class Section(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Trainer(models.Model):
-    """Модель тренера спортшколы."""
-    fio = models.CharField(
-        verbose_name='Фамилия Имя Отчество',
-        max_length=255,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
-            RegexValidator(
-                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
-                message='Неправильный формат ФИО.'
-            ),
-        ],
-        blank=False
-    )
-    info = models.TextField(
-        verbose_name='Информация о тренере',
-        max_length=10000,
-        blank=True
-    )
-    photo = models.ImageField(
-        verbose_name='Фотография тренера',
-        upload_to='img/trainers',
-        blank=True
-    )
-
-    class Meta:
-        verbose_name = 'Тренер'
-        verbose_name_plural = 'Тренера'
-
-    def __str__(self):
-        return self.fio
-
-
-class SectionTrainer(models.Model):
-    """Модель, которая связывает секции и тренера."""
-    section = models.ForeignKey(
-        Section,
-        verbose_name='Секция',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-    trainer = models.ForeignKey(
-        Trainer,
-        verbose_name='Тренер',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = "Секция и тренер"
-        verbose_name_plural = "Секции и тренера"
-
-    def __str__(self):
-        return self.section.sport_organization.title
 
 
 class DayOfWeek(models.Model):
