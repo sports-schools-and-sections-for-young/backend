@@ -26,6 +26,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
         source='sport_organization.title'
     )
     sport_type = serializers.CharField(source='sport_type.title')
+    site = serializers.CharField(source='sport_organization.site')
     age_group = AgeGroupSerializer()
     address = AddressSerializer()
     rating = serializers.SerializerMethodField()
