@@ -27,7 +27,7 @@ SU_PASSWORD=pass
 SU_NAME, SU_EMAIL, SU_PASSWORD - данные суперпользователя.\
 В переменную ALLOWED_HOSTS записать IP-адрес сервера и доменное имя сайта.
 
-4. В папку sport_hub скопировать файл docker-compose.yml из проекта.
+4. В папку sport_hub скопировать файлы docker-compose.yml и nginx.conf из проекта.
 
 5. На удаленном сервере изменить файл конфигурации Nginx:
 ```
