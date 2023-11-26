@@ -134,62 +134,6 @@ class SportOrganization(models.Model):
         return self.title
 
 
-class Order(models.Model):
-    """Модель заявки в спортшколу."""
-    sport_organization = models.ForeignKey(
-        SportOrganization,
-        verbose_name='Спортивная школа',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-    fio = models.CharField(
-        verbose_name='Фамилия Имя Отчество',
-        max_length=255,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
-            RegexValidator(
-                regex=r'^[А-Я][а-я]+\s[А-Я][а-я]+\s[А-Я][а-я]+$',
-                message='Неправильный формат ФИО.'
-            ),
-        ],
-        blank=False
-    )
-    age = models.PositiveIntegerField(
-        verbose_name='Возраст ребенка',
-        validators=[
-            MinValueValidator(1, message='Минимальное значение 1'),
-            MaxValueValidator(99, message='Максимальное значение 99'),
-        ],
-        blank=False
-    )
-    gender = models.CharField(
-        verbose_name='Пол ребенка',
-        max_length=7,
-        choices=settings.GENDER_CHOICES,
-        blank=False
-    )
-    phone = models.CharField(
-        verbose_name='Номер телефона для связи',
-        max_length=18,
-        validators=[
-            MinLengthValidator(14, message='Минимум 14 символов'),
-        ],
-        blank=False
-    )
-    comment = models.CharField(
-        verbose_name='Комментарий к заявке',
-        max_length=255,
-        blank=True
-    )
-
-    class Meta:
-        verbose_name = 'Заявка'
-        verbose_name_plural = 'Заявки'
-
-    def __str__(self):
-        return f'Заявка в спортшколу {self.sport_organization.title}'
-
-
 class PhoneNumber(models.Model):
     """Модель номера телефона."""
     value = models.CharField(
