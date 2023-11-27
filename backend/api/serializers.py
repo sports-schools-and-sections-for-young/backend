@@ -1,7 +1,8 @@
 from django.db.models import Avg
 from organizations.models import Review
 from rest_framework import serializers
-from sections.models import Address, AgeGroup, Schedule, Section, SportType
+from sections.models import (Address, AgeGroup, PhoneOfSection, Schedule,
+                             Section, SportType)
 
 
 class AgeGroupSerializer(serializers.ModelSerializer):
@@ -32,6 +33,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     review_amount = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
+    phone = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
@@ -60,6 +62,12 @@ class SearchSectionSerializer(serializers.ModelSerializer):
             times = (f"{schedule.time_from.strftime('%H:%M')} - "
                      f"{schedule.time_until.strftime('%H:%M')}")
         return {'days': days_of_week, 'time': times}
+
+    # Отображение телефона секции
+    def get_phone(self, obj):
+        phone_of_section = PhoneOfSection.objects.filter(section=obj).first()
+        if phone_of_section:
+            return phone_of_section.phone.value
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
