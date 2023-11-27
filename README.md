@@ -1,14 +1,16 @@
 ## СпортХаб - платформа для объединения спортивных школ и секций для молодежи
 
+http://sporthub.acceleratorpracticum.ru/
+
+http://185.41.162.249/
+
 [![SportHub workflow](https://github.com/sports-schools-and-sections-for-young/backend/actions/workflows/main.yml/badge.svg)](https://github.com/sports-schools-and-sections-for-young/backend/actions/workflows/main.yml)
 
 ### 1. Запуск проекта в контейнерах на удаленном сервере
 
-1. Клонировать репозиторий и перейти в папку с проектом.
+1. Зайти на удаленный сервер и создать папку sport_hub.
 
-2. Зайти на удаленный сервер и создать папку sport_hub.
-
-3. В папке sport_hub создать файл .env. Пример заполнения файла:
+2. В папке sport_hub создать файл .env. Пример заполнения файла:
 ```
 SECRET_KEY='KEY'
 DEBUG=True # True отладка включена, False отладка отключена
@@ -27,14 +29,14 @@ SU_PASSWORD=pass
 SU_NAME, SU_EMAIL, SU_PASSWORD - данные суперпользователя.\
 В переменную ALLOWED_HOSTS записать IP-адрес сервера и доменное имя сайта.
 
-4. В папку sport_hub скопировать файлы docker-compose.yml и nginx.conf из проекта.
+3. В папку sport_hub скопировать файлы docker-compose.yml и nginx.conf из проекта.
 
-5. На удаленном сервере изменить файл конфигурации Nginx:
+4. На удаленном сервере изменить файл конфигурации Nginx:
 ```
 sudo nano /etc/nginx/sites-enabled/default
 ```
 
-6. Для этого записать и сохранить новые настройки:
+5. Для этого записать и сохранить новые настройки:
 ```
 server {
     listen 80;
@@ -48,38 +50,36 @@ server {
 }
 ```
 
-7. Проверить файл конфигурации Nginx при помощи команды:
+6. Проверить файл конфигурации Nginx при помощи команды:
 ```
 sudo nginx -t
 ```
 
-8. Перезагрузить Nginx:
+7. Перезагрузить Nginx:
 ```
 sudo systemctl reload nginx
 ```
 
-9. Запустить проект при помощи команды:
+8. Запустить проект при помощи команды:
 ```
 sudo docker compose up -d
 ```
 
-10. Создать и применить миграции к БД:
+9. Создать и применить миграции к БД:
 ```
 sudo docker compose exec backend python manage.py makemigrations
 sudo docker compose exec backend python manage.py migrate
 ```
 
-11. Собрать статику:
+10. Собрать статику:
 ```
 sudo docker compose exec backend python manage.py collectstatic --no-input
 ```
 
-12. Создать суперпользователя:
+11. Создать суперпользователя:
 ```
 sudo docker compose exec backend python manage.py create_su
 ```
-
-Проект доступен по адресу http://sporthub.acceleratorpracticum.ru/
 
 ### 2. Локальный запуск backend
 
