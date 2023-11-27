@@ -7,8 +7,10 @@ from .models import (Address, PhoneNumber, PhoneOfOrganization, Review,
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ('index', 'city', 'metro', 'district', 'street', 'house')
-    list_filter = ('index', 'city', 'metro', 'district', 'street', 'house')
+    list_display = ('index', 'city', 'metro', 'district',
+                    'street', 'house', 'latitude', 'longitude')
+    list_filter = ('index', 'city', 'metro', 'district',
+                   'street', 'house', 'latitude', 'longitude')
     empty_value_display = settings.EMPTY_VALUE
 
 
