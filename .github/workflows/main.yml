@@ -40,10 +40,9 @@ jobs:
         with:
           context: ./backend/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/sport_search_backend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/backend:latest
 
   deploy:
-    if: ${{ github.ref_name == 'main' }}
     name: Deploy project on remote server
     runs-on: ubuntu-latest
     needs: 
@@ -51,15 +50,6 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
-    - name: Copy docker-compose.yml via ssh
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        source: "docker-compose.yml"
-        target: "sport_search"
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@v0.1.4
       with:
@@ -70,10 +60,21 @@ jobs:
         script: |
           cd sport_search
           sudo docker compose down
-          sudo docker system prune -af
           sudo docker compose pull
           sudo docker compose up -d
           sudo docker compose exec backend python manage.py makemigrations
           sudo docker compose exec backend python manage.py migrate
           sudo docker compose exec backend python manage.py collectstatic --no-input
           sudo docker compose exec backend python manage.py create_su
+
+  send_message:
+    runs-on: ubuntu-latest
+    name: Send message to Telegram
+    needs: deploy
+    steps:
+    - name: Send message
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: Деплой backend проекта sport hub успешно выполнен.
