@@ -1,4 +1,5 @@
 from django.db.models import Avg
+from haversine import haversine
 from organizations.models import Review
 from rest_framework import serializers
 from sections.models import (Address, AgeGroup, PhoneOfSection, Schedule,
@@ -35,6 +36,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
+    distance = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
@@ -77,6 +79,25 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     def get_comment(self, obj):
         phone_of_section = self.get_phone_of_section(obj)
         return phone_of_section.phone.comment
+
+    # Отображение расстояния от пользователя до секции
+    def get_distance(self, obj):
+        # Координаты по-умолчанию None, чтобы не сломался эндпойнт, если
+        # координаты не были переданы
+        coords = self.context.get('request').query_params.get('coords', None)
+        if coords is not None:
+            # Получение широты и долготы пользователя
+            user_lat, user_lon = map(float, coords.split(':'))
+            # Получение широты и долготы секции
+            section_lat = obj.address.latitude
+            section_lon = obj.address.longitude
+            # Координаты пользователя
+            user_coords = (user_lat, user_lon)
+            # Координаты секции
+            section_coords = (section_lat, section_lon)
+            # Расчет расстояния
+            distance = haversine(user_coords, section_coords)
+            return round(distance, 2)
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
