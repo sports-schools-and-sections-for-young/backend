@@ -60,7 +60,19 @@ class Address(models.Model):
     full_address = models.CharField(
         verbose_name='Полный адрес',
         max_length=350,
-        blank=True
+        blank=False
+    )
+    latitude = models.DecimalField(
+        verbose_name='Широта',
+        max_digits=12,
+        decimal_places=6,
+        blank=False
+    )
+    longitude = models.DecimalField(
+        verbose_name='Долгота',
+        max_digits=12,
+        decimal_places=6,
+        blank=False
     )
 
     class Meta:
