@@ -34,6 +34,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     review_amount = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
+    comment = serializers.SerializerMethodField()
 
     class Meta:
         model = Section
@@ -63,11 +64,19 @@ class SearchSectionSerializer(serializers.ModelSerializer):
                      f"{schedule.time_until.strftime('%H:%M')}")
         return {'days': days_of_week, 'time': times}
 
+    # Получение телефона секции
+    def get_phone_of_section(self, obj):
+        return PhoneOfSection.objects.filter(section=obj).first()
+
     # Отображение телефона секции
     def get_phone(self, obj):
-        phone_of_section = PhoneOfSection.objects.filter(section=obj).first()
-        if phone_of_section:
-            return phone_of_section.phone.value
+        phone_of_section = self.get_phone_of_section(obj)
+        return phone_of_section.phone.value
+
+    # Отображение комментария к телефону секции
+    def get_comment(self, obj):
+        phone_of_section = self.get_phone_of_section(obj)
+        return phone_of_section.phone.comment
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
