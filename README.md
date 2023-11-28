@@ -42,6 +42,7 @@ server {
     listen 80;
     server_tokens off;
     server_name 185.41.162.249 sporthub.acceleratorpracticum.ru;
+    client_max_body_size 20M;
     
     location / {
         proxy_set_header        Host $http_host;
