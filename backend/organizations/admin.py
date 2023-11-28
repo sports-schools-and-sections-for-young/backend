@@ -1,14 +1,16 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import (Address, Order, PhoneNumber, PhoneOfOrganization, Review,
+from .models import (Address, PhoneNumber, PhoneOfOrganization, Review,
                      SportOrganization)
 
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
-    list_display = ('index', 'city', 'metro', 'district', 'street', 'house')
-    list_filter = ('index', 'city', 'metro', 'district', 'street', 'house')
+    list_display = ('index', 'city', 'metro', 'district',
+                    'street', 'house', 'latitude', 'longitude')
+    list_filter = ('index', 'city', 'metro', 'district',
+                   'street', 'house', 'latitude', 'longitude')
     empty_value_display = settings.EMPTY_VALUE
 
 
@@ -16,14 +18,6 @@ class AddressAdmin(admin.ModelAdmin):
 class SportOrganizationAdmin(admin.ModelAdmin):
     list_display = ('title', 'address', 'email', 'site', 'description')
     list_filter = ('title', 'address', 'email', 'site')
-    empty_value_display = settings.EMPTY_VALUE
-
-
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('sport_organization', 'fio', 'age', 'gender', 'phone',
-                    'comment')
-    list_filter = ('sport_organization', 'fio', 'age', 'gender', 'phone')
     empty_value_display = settings.EMPTY_VALUE
 
 

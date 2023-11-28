@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 
 from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
-                     Schedule, Section, SectionTrainer, SportType, Trainer)
+                     Schedule, Section, SportType)
 from .utils import DayOfWeekFilter
 
 
@@ -21,23 +21,10 @@ class AgeGroupAdmin(admin.ModelAdmin):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('sport_organization', 'title', 'gender', 'sport_type',
-                    'age_group', 'address', 'aviable', 'price')
+                    'age_group', 'address', 'aviable', 'price', 'free_class')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
-                   'age_group', 'address', 'aviable', 'price')
+                   'age_group', 'address', 'aviable', 'price', 'free_class')
     empty_value_display = settings.EMPTY_VALUE
-
-
-@admin.register(Trainer)
-class TrainerAdmin(admin.ModelAdmin):
-    list_display = ('fio', 'info', 'photo')
-    list_filter = ('fio', )
-    empty_value_display = settings.EMPTY_VALUE
-
-
-@admin.register(SectionTrainer)
-class SectionTrainerAdmin(admin.ModelAdmin):
-    list_display = ('section', 'trainer')
-    list_filter = ('section', 'trainer')
 
 
 @admin.register(DayOfWeek)

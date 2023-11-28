@@ -1,4 +1,5 @@
 from django_filters.rest_framework import FilterSet, filters
+from haversine import haversine
 from sections.models import DayOfWeek, Section, SportType
 
 
@@ -23,11 +24,13 @@ class SearchSectionFilter(FilterSet):
         field_name='schedule__day__title',
         to_field_name='title'
     )
+    distance = filters.NumberFilter(label='Поиск по расстоянию',
+                                    method='get_distance')
 
     class Meta:
         model = Section
         fields = ('gender', 'sport_type', 'age_group',
-                  'price', 'address', 'day_of_week')
+                  'price', 'address', 'day_of_week', 'free_class')
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):
@@ -43,6 +46,33 @@ class SearchSectionFilter(FilterSet):
         for item in value.split():
             queryset = queryset.filter(
                 address__full_address__icontains=item)
+        return queryset
+
+    # Фильтр по расстоянию
+    def get_distance(self, queryset, name, value):
+        # Координаты по-умолчанию None, чтобы эндпойнт не сломался, если
+        # координаты не были переданы
+        coords = self.request.query_params.get('coords', None)
+        if coords is not None:
+            # Получение широты и долготы пользователя
+            user_lat, user_lon = map(float, coords.split(':'))
+            # Координаты пользователя
+            user_coords = (user_lat, user_lon)
+            # Список, который содержит секции отфильтрованные по расстоянию
+            filtered_sections = []
+            # Перебираем все объекты модели Section
+            for section in queryset:
+                # Получение широты и долготы секции
+                section_lat = section.address.latitude
+                section_lon = section.address.longitude
+                # Координаты секции
+                section_coords = (section_lat, section_lon)
+                # Расчет расстояния
+                distance = haversine(user_coords, section_coords)
+                # Фильруем по расстоянию
+                if distance <= value:
+                    filtered_sections.append(section.id)
+            return queryset.filter(id__in=filtered_sections)
         return queryset
 
 
