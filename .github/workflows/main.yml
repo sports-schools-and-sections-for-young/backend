@@ -1,4 +1,4 @@
-name: SportHub workflow
+name: SportHub backend workflow
 
 on: push
 
