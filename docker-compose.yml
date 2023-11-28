@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13.1
+    image: postgres:16.1
     env_file:
       - ./.env
     restart: always
@@ -10,7 +10,7 @@ services:
       - db_data:/var/lib/postgresql/data/
 
   backend:
-    image: sanya101/sport_search_backend
+    image: yasporthub/backend
     env_file:
       - ./.env
     depends_on:
@@ -21,16 +21,16 @@ services:
       - media:/app/media/
 
   frontend:
-    image: sanya101/sport_search_frontend
+    image: yasporthub/frontend
     env_file:
       - ./.env
     depends_on:
       - backend
     volumes:
-      - frontend_data:/app/build/
+      - frontend_data:/app/dist/
 
   nginx:
-    image: nginx:1.22.1
+    image: nginx:1.25.3
     ports:
       - "8000:80"
     depends_on:
