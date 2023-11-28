@@ -9,7 +9,7 @@ class Address(models.Model):
         verbose_name='Индекс',
         max_length=6,
         validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
+            MinLengthValidator(6, message='Минимум 6 символов'),
             RegexValidator(
                 regex=r'^\d{6}$',
                 message='Индекс может содержать только цифры.'
@@ -132,7 +132,7 @@ class SportOrganization(models.Model):
         blank=True
     )
     description = models.TextField(
-        verbose_name='Описание организации',
+        verbose_name='Описание спортивной школы',
         max_length=20000,
         blank=False
     )
