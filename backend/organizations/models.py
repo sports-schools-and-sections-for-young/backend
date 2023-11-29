@@ -59,7 +59,8 @@ class Address(models.Model):
     full_address = models.CharField(
         verbose_name='Полный адрес',
         max_length=350,
-        blank=False
+        blank=True,
+        editable=False
     )
     latitude = models.DecimalField(
         verbose_name='Широта',
