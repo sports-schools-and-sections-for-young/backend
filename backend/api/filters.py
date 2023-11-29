@@ -9,7 +9,10 @@ class SearchSectionFilter(FilterSet):
     возраст ребенка, стоимость занятий, адрес секции, день недели работы
     секции.
     """
-    age_group = filters.NumberFilter(method='get_age_group')
+    age_group = filters.NumberFilter(
+        label='Возраст ребенка',
+        method='get_age_group'
+    )
     sport_type = filters.ModelMultipleChoiceFilter(
         label='Вид спорта',
         queryset=SportType.objects.all(),
@@ -34,8 +37,7 @@ class SearchSectionFilter(FilterSet):
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):
-        return queryset.filter(
-            age_group__year_until__gte=value, age_group__year_from__lte=value)
+        return queryset.filter(year_until__gte=value, year_from__lte=value)
 
     # Фильтр по стоимости занятий
     def get_price(self, queryset, name, value):

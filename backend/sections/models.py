@@ -21,33 +21,6 @@ class SportType(models.Model):
         return self.title
 
 
-class AgeGroup(models.Model):
-    """Модель возрастной группы."""
-    year_from = models.PositiveIntegerField(
-        verbose_name='Нижняя граница возрастной группы',
-        validators=[
-            MinValueValidator(1, message='Минимальное значение 1'),
-            MaxValueValidator(99, message='Максимальное значение 99'),
-        ],
-        blank=False
-    )
-    year_until = models.PositiveIntegerField(
-        verbose_name='Верхняя граница возрастной группы',
-        validators=[
-            MinValueValidator(1, message='Минимальное значение 1'),
-            MaxValueValidator(99, message='Максимальное значение 99'),
-        ],
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = "Возрастная группа"
-        verbose_name_plural = "Возрастные группы"
-
-    def __str__(self):
-        return f'С {self.year_from} до {self.year_until} лет'
-
-
 class Section(models.Model):
     """Модель секции спортшколы."""
     sport_organization = models.ForeignKey(
@@ -77,11 +50,20 @@ class Section(models.Model):
         null=True,
         blank=False
     )
-    age_group = models.ForeignKey(
-        AgeGroup,
-        verbose_name='Возрастная группа',
-        on_delete=models.SET_NULL,
-        null=True,
+    year_from = models.PositiveIntegerField(
+        verbose_name='Нижняя граница возрастной группы',
+        validators=[
+            MinValueValidator(3, message='Минимальное значение 3'),
+            MaxValueValidator(18, message='Максимальное значение 18'),
+        ],
+        blank=False
+    )
+    year_until = models.PositiveIntegerField(
+        verbose_name='Верхняя граница возрастной группы',
+        validators=[
+            MinValueValidator(3, message='Минимальное значение 3'),
+            MaxValueValidator(18, message='Максимальное значение 18'),
+        ],
         blank=False
     )
     address = models.ForeignKey(
@@ -170,7 +152,7 @@ class Schedule(models.Model):
         verbose_name_plural = 'Расписания'
 
     def __str__(self):
-        return f'{self.section.title}'
+        return self.section.title
 
 
 class PhoneOfSection(models.Model):

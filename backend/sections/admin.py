@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import (AgeGroup, DayOfWeek, PhoneOfSection, PhotoOfSection,
-                     Schedule, Section, SportType)
+from .models import (DayOfWeek, PhoneOfSection, PhotoOfSection, Schedule,
+                     Section, SportType)
 from .utils import DayOfWeekFilter
 
 
@@ -12,18 +12,14 @@ class SportTypeAdmin(admin.ModelAdmin):
     list_filter = ('title', )
 
 
-@admin.register(AgeGroup)
-class AgeGroupAdmin(admin.ModelAdmin):
-    list_display = ('year_from', 'year_until')
-    list_filter = ('year_from', 'year_until')
-
-
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('sport_organization', 'title', 'gender', 'sport_type',
-                    'age_group', 'address', 'aviable', 'price', 'free_class')
+                    'year_from', 'year_until', 'address', 'aviable', 'price',
+                    'free_class')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
-                   'age_group', 'address', 'aviable', 'price', 'free_class')
+                   'year_from', 'year_until', 'address', 'aviable', 'price',
+                   'free_class')
     empty_value_display = settings.EMPTY_VALUE
 
 

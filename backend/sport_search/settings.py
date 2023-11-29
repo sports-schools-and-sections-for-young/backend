@@ -140,6 +140,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMPTY_VALUE = '-пусто-'
 
 GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
+    ('Man', 'мальчик'),
+    ('Woman', 'девочка'),
 )
