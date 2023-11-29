@@ -31,12 +31,16 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     site = serializers.CharField(source='sport_organization.site')
     age_group = AgeGroupSerializer()
     address = AddressSerializer()
-    rating = serializers.SerializerMethodField()
-    review_amount = serializers.SerializerMethodField()
+    # На данный момент, у нас не будет личного кабинета пользователя,
+    # поэтому не будет отзывов и рейтинга секций
+    # rating = serializers.SerializerMethodField()
+    # review_amount = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
     distance = serializers.SerializerMethodField()
+    latitude = serializers.CharField(source='address.latitude')
+    longitude = serializers.CharField(source='address.longitude')
 
     class Meta:
         model = Section
