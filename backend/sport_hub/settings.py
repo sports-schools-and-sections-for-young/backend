@@ -13,6 +13,8 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(';')
 
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '*').split(';')
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,7 +43,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'sport_search.urls'
+ROOT_URLCONF = 'sport_hub.urls'
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
@@ -61,7 +63,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sport_search.wsgi.application'
+WSGI_APPLICATION = 'sport_hub.wsgi.application'
 
 if os.getenv('DATABASE', 'Prod') == 'Prod':
     DATABASES = {
@@ -140,6 +142,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMPTY_VALUE = '-пусто-'
 
 GENDER_CHOICES = (
-    ('Man', 'Мужской'),
-    ('Woman', 'Женский'),
+    ('Man', 'мальчик'),
+    ('Woman', 'девочка'),
 )

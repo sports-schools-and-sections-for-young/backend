@@ -21,31 +21,23 @@ class SportType(models.Model):
         return self.title
 
 
-class AgeGroup(models.Model):
-    """Модель возрастной группы."""
-    year_from = models.PositiveIntegerField(
-        verbose_name='Нижняя граница возрастной группы',
+class DayOfWeek(models.Model):
+    """Модель дня недели."""
+    title = models.CharField(
+        verbose_name='День недели',
+        max_length=11,
         validators=[
-            MinValueValidator(1, message='Минимальное значение 1'),
-            MaxValueValidator(99, message='Максимальное значение 99'),
-        ],
-        blank=False
-    )
-    year_until = models.PositiveIntegerField(
-        verbose_name='Верхняя граница возрастной группы',
-        validators=[
-            MinValueValidator(1, message='Минимальное значение 1'),
-            MaxValueValidator(99, message='Максимальное значение 99'),
+            MinLengthValidator(5, message='Минимум 5 символов')
         ],
         blank=False
     )
 
     class Meta:
-        verbose_name = "Возрастная группа"
-        verbose_name_plural = "Возрастные группы"
+        verbose_name = 'День недели'
+        verbose_name_plural = 'Дни недели'
 
     def __str__(self):
-        return f'С {self.year_from} до {self.year_until} лет'
+        return self.title
 
 
 class Section(models.Model):
@@ -77,11 +69,25 @@ class Section(models.Model):
         null=True,
         blank=False
     )
-    age_group = models.ForeignKey(
-        AgeGroup,
-        verbose_name='Возрастная группа',
-        on_delete=models.SET_NULL,
-        null=True,
+    schedule = models.ManyToManyField(
+        DayOfWeek,
+        verbose_name='День недели',
+        blank=False
+    )
+    year_from = models.PositiveIntegerField(
+        verbose_name='Нижняя граница возрастной группы',
+        validators=[
+            MinValueValidator(3, message='Минимальное значение 3'),
+            MaxValueValidator(18, message='Максимальное значение 18'),
+        ],
+        blank=False
+    )
+    year_until = models.PositiveIntegerField(
+        verbose_name='Верхняя граница возрастной группы',
+        validators=[
+            MinValueValidator(3, message='Минимальное значение 3'),
+            MaxValueValidator(18, message='Максимальное значение 18'),
+        ],
         blank=False
     )
     address = models.ForeignKey(
@@ -122,55 +128,6 @@ class Section(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class DayOfWeek(models.Model):
-    """Модель дня недели."""
-    title = models.CharField(
-        verbose_name='День недели',
-        max_length=11,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
-        ],
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'День недели'
-        verbose_name_plural = 'Дни недели'
-
-    def __str__(self):
-        return self.title
-
-
-class Schedule(models.Model):
-    """Модель расписания секции."""
-    section = models.ForeignKey(
-        Section,
-        verbose_name='Секция',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-    day = models.ManyToManyField(
-        DayOfWeek,
-        verbose_name='День недели',
-        blank=False
-    )
-    time_from = models.TimeField(
-        verbose_name='Время начала',
-        blank=False
-    )
-    time_until = models.TimeField(
-        verbose_name='Время окончания',
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'Расписание'
-        verbose_name_plural = 'Расписания'
-
-    def __str__(self):
-        return f'{self.section.title}'
 
 
 class PhoneOfSection(models.Model):
