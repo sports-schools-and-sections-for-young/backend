@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import (DayOfWeek, PhoneOfSection, PhotoOfSection, Schedule,
-                     Section, SportType)
-from .utils import DayOfWeekFilter
+from .models import (DayOfWeek, PhoneOfSection, PhotoOfSection, Section,
+                     SportType)
+from .utils import ScheduleFilter
 
 
 @admin.register(SportType)
@@ -15,28 +15,23 @@ class SportTypeAdmin(admin.ModelAdmin):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('sport_organization', 'title', 'gender', 'sport_type',
-                    'year_from', 'year_until', 'address', 'aviable', 'price',
+                    'get_schedule', 'year_from', 'year_until', 'address',
+                    'aviable', 'price',
                     'free_class')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
-                   'year_from', 'year_until', 'address', 'aviable', 'price',
-                   'free_class')
+                   ScheduleFilter, 'year_from', 'year_until', 'address',
+                   'aviable', 'price', 'free_class')
     empty_value_display = settings.EMPTY_VALUE
+
+    # Отображение дней работы секции в админке
+    def get_schedule(self, obj):
+        return ", ".join([day.title for day in obj.schedule.all()])
 
 
 @admin.register(DayOfWeek)
 class DayOfWeekAdmin(admin.ModelAdmin):
     list_display = ('title', )
     list_filter = ('title', )
-
-
-@admin.register(Schedule)
-class ScheduleAdmin(admin.ModelAdmin):
-    list_display = ('section', 'get_days', 'time_from', 'time_until')
-    list_filter = ('section', DayOfWeekFilter)
-
-    # Отображение дней недели секции в админке
-    def get_days(self, obj):
-        return ", ".join([day.title for day in obj.day.all()])
 
 
 @admin.register(PhoneOfSection)

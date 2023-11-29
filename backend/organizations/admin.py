@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import (Address, PhoneNumber, PhoneOfOrganization, Review,
+from .models import (Address, PhoneNumber, PhoneOfOrganization,
                      SportOrganization)
 
 
@@ -32,10 +32,3 @@ class PhoneNumberAdmin(admin.ModelAdmin):
 class PhoneOfOrganizationAdmin(admin.ModelAdmin):
     list_display = ('phone', 'sport_school')
     list_filter = ('phone', 'sport_school')
-
-
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('date_and_time', 'comment', 'rating', 'sport_school')
-    list_filter = ('date_and_time', 'rating', 'sport_school')
-    empty_value_display = settings.EMPTY_VALUE

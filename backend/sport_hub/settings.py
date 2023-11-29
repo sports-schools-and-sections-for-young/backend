@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'sport_search.urls'
+ROOT_URLCONF = 'sport_hub.urls'
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 
@@ -61,7 +61,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sport_search.wsgi.application'
+WSGI_APPLICATION = 'sport_hub.wsgi.application'
 
 if os.getenv('DATABASE', 'Prod') == 'Prod':
     DATABASES = {

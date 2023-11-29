@@ -1,9 +1,6 @@
-from django.db.models import Avg
 from haversine import haversine
-from organizations.models import Review
 from rest_framework import serializers
-from sections.models import (Address, PhoneOfSection, Schedule, Section,
-                             SportType)
+from sections.models import Address, PhoneOfSection, Section, SportType
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -16,17 +13,13 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class SearchSectionSerializer(serializers.ModelSerializer):
     """Сериализатор для поиска секций."""
-    age_group = serializers.SerializerMethodField()
     sport_organization = serializers.CharField(
         source='sport_organization.title'
     )
     sport_type = serializers.CharField(source='sport_type.title')
     site = serializers.CharField(source='sport_organization.site')
+    age_group = serializers.SerializerMethodField()
     address = AddressSerializer()
-    # На данный момент, у нас не будет личного кабинета пользователя,
-    # поэтому не будет отзывов и рейтинга секций
-    # rating = serializers.SerializerMethodField()
-    # review_amount = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
@@ -45,58 +38,39 @@ class SearchSectionSerializer(serializers.ModelSerializer):
             "year_until": obj.year_until,
         }
 
-    # Подсчет среднего рейтинга спортшколы
-    # def get_rating(self, obj):
-    #     rating = Review.objects.filter(sport_school=obj.sport_organization)
-    #     if rating.exists():
-    #         rating_avg = rating.aggregate(Avg('rating'))['rating__avg']
-    #         return round(rating_avg, 2)
-
-    # Подсчет количества отзывов
-    # def get_review_amount(self, obj):
-    #     return Review.objects.filter(
-    #         sport_school=obj.sport_organization
-    #     ).count()
-
-    # Отображение расписания секции
+    # Отображение дней работы секции
     def get_schedule(self, obj):
-        schedules = Schedule.objects.filter(section=obj)
-        days_of_week = []
-        # times = ""
-        for schedule in schedules:
-            days_of_week = ', '.join([day.title for day in schedule.day.all()])
-            # times = (f"{schedule.time_from.strftime('%H:%M')} - "
-            #          f"{schedule.time_until.strftime('%H:%M')}")
-        # return {'days': days_of_week, 'time': times}
-        return days_of_week
+        schedule = ', '.join([day.title for day in obj.schedule.all()])
+        if schedule:
+            return schedule
 
     # Получение телефона секции
-    def get_phone_of_section(self, obj):
+    def phone_of_section(self, obj):
         return PhoneOfSection.objects.filter(section=obj).first()
 
     # Отображение телефона секции
     def get_phone(self, obj):
-        phone_of_section = self.get_phone_of_section(obj)
-        return phone_of_section.phone.value
+        return self.phone_of_section(obj).phone.value
 
     # Отображение комментария к телефону секции
     def get_comment(self, obj):
-        phone_of_section = self.get_phone_of_section(obj)
-        return phone_of_section.phone.comment
+        comment = self.phone_of_section(obj).phone.comment
+        if comment:
+            return comment
 
     # Отображение расстояния от пользователя до секции
     def get_distance(self, obj):
-        # Координаты по-умолчанию None, чтобы не сломался эндпойнт, если
+        # Координаты по-умолчанию None, чтобы эндпойнт не сломался, если
         # координаты не были переданы
         coords = self.context.get('request').query_params.get('coords', None)
-        if coords is not None:
+        if coords:
             # Получение широты и долготы пользователя
             user_lat, user_lon = map(float, coords.split(':'))
+            # Координаты пользователя
+            user_coords = (user_lat, user_lon)
             # Получение широты и долготы секции
             section_lat = obj.address.latitude
             section_lon = obj.address.longitude
-            # Координаты пользователя
-            user_coords = (user_lat, user_lon)
             # Координаты секции
             section_coords = (section_lat, section_lon)
             # Расчет расстояния

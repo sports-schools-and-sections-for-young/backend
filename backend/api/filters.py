@@ -6,8 +6,8 @@ from sections.models import DayOfWeek, Section, SportType
 class SearchSectionFilter(FilterSet):
     """
     Фильтр для поиска секций по следующим полям: пол ребенка, вид спорта,
-    возраст ребенка, стоимость занятий, адрес секции, день недели работы
-    секции.
+    возраст ребенка, стоимость занятий, адрес секции, дням работы секции,
+    расстоянию.
     """
     age_group = filters.NumberFilter(
         label='Возраст ребенка',
@@ -21,19 +21,21 @@ class SearchSectionFilter(FilterSet):
     )
     price = filters.NumberFilter(method='get_price')
     address = filters.CharFilter(method='get_address')
-    day_of_week = filters.ModelMultipleChoiceFilter(
+    schedule = filters.ModelMultipleChoiceFilter(
         label='День недели',
         queryset=DayOfWeek.objects.all(),
-        field_name='schedule__day__title',
+        field_name='schedule__title',
         to_field_name='title'
     )
-    distance = filters.NumberFilter(label='Поиск по расстоянию',
-                                    method='get_distance')
+    distance = filters.NumberFilter(
+        label='Поиск по расстоянию',
+        method='get_distance'
+    )
 
     class Meta:
         model = Section
-        fields = ('gender', 'sport_type', 'age_group',
-                  'price', 'address', 'day_of_week', 'free_class')
+        fields = ('gender', 'sport_type', 'age_group', 'price', 'address',
+                  'schedule', 'free_class')
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):
@@ -55,7 +57,7 @@ class SearchSectionFilter(FilterSet):
         # Координаты по-умолчанию None, чтобы эндпойнт не сломался, если
         # координаты не были переданы
         coords = self.request.query_params.get('coords', None)
-        if coords is not None:
+        if coords:
             # Получение широты и долготы пользователя
             user_lat, user_lon = map(float, coords.split(':'))
             # Координаты пользователя

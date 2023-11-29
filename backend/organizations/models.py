@@ -1,5 +1,4 @@
-from django.core.validators import (MaxValueValidator, MinLengthValidator,
-                                    MinValueValidator, RegexValidator)
+from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 
 
@@ -190,38 +189,3 @@ class PhoneOfOrganization(models.Model):
 
     def __str__(self):
         return f'Телефон спортшколы {self.sport_school}'
-
-
-class Review(models.Model):
-    """Модель отзыва о спортшколе."""
-    comment = models.CharField(
-        verbose_name='Текст отзыва',
-        max_length=255,
-        blank=True
-    )
-    date_and_time = models.DateTimeField(
-        verbose_name='Дата и время оставления отзыва',
-        auto_now_add=True,
-        blank=False
-    )
-    rating = models.PositiveIntegerField(
-        verbose_name='Рейтинг',
-        validators=[
-            MinValueValidator(1, message='Минимумальное значение 1'),
-            MaxValueValidator(5, message='Максимальное значение 5'),
-        ],
-        blank=False
-    )
-    sport_school = models.ForeignKey(
-        SportOrganization,
-        verbose_name='Спортивная школа',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'Отзыв'
-        verbose_name_plural = 'Отзывы'
-
-    def __str__(self):
-        return f'Отзыв о спортшколе {self.sport_school.title}'

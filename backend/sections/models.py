@@ -21,6 +21,25 @@ class SportType(models.Model):
         return self.title
 
 
+class DayOfWeek(models.Model):
+    """Модель дня недели."""
+    title = models.CharField(
+        verbose_name='День недели',
+        max_length=11,
+        validators=[
+            MinLengthValidator(5, message='Минимум 5 символов')
+        ],
+        blank=False
+    )
+
+    class Meta:
+        verbose_name = 'День недели'
+        verbose_name_plural = 'Дни недели'
+
+    def __str__(self):
+        return self.title
+
+
 class Section(models.Model):
     """Модель секции спортшколы."""
     sport_organization = models.ForeignKey(
@@ -48,6 +67,11 @@ class Section(models.Model):
         verbose_name='Вид спорта',
         on_delete=models.SET_NULL,
         null=True,
+        blank=False
+    )
+    schedule = models.ManyToManyField(
+        DayOfWeek,
+        verbose_name='День недели',
         blank=False
     )
     year_from = models.PositiveIntegerField(
@@ -104,55 +128,6 @@ class Section(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class DayOfWeek(models.Model):
-    """Модель дня недели."""
-    title = models.CharField(
-        verbose_name='День недели',
-        max_length=11,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов')
-        ],
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'День недели'
-        verbose_name_plural = 'Дни недели'
-
-    def __str__(self):
-        return self.title
-
-
-class Schedule(models.Model):
-    """Модель расписания секции."""
-    section = models.ForeignKey(
-        Section,
-        verbose_name='Секция',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-    day = models.ManyToManyField(
-        DayOfWeek,
-        verbose_name='День недели',
-        blank=False
-    )
-    time_from = models.TimeField(
-        verbose_name='Время начала',
-        blank=False
-    )
-    time_until = models.TimeField(
-        verbose_name='Время окончания',
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'Расписание'
-        verbose_name_plural = 'Расписания'
-
-    def __str__(self):
-        return self.section.title
 
 
 class PhoneOfSection(models.Model):
