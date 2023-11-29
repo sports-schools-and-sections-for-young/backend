@@ -21,6 +21,7 @@ POSTGRES_PASSWORD=password
 DB_HOST=db
 DB_PORT=5432
 ALLOWED_HOSTS=185.41.162.249;127.0.0.1;localhost;sporthub.acceleratorpracticum.ru
+CSRF_TRUSTED_ORIGINS=https://sporthub.acceleratorpracticum.ru
 SU_NAME=admin
 SU_EMAIL=admin@mail.ru
 SU_PASSWORD=pass
@@ -28,6 +29,7 @@ SU_PASSWORD=pass
 Сгенерировать секретный ключ и сохранить в переменной SECRET_KEY.\
 SU_NAME, SU_EMAIL, SU_PASSWORD - данные суперпользователя.\
 В переменную ALLOWED_HOSTS записать IP-адрес сервера и доменное имя сайта.
+В переменную CSRF_TRUSTED_ORIGINS записать доменное имя сайта.
 
 3. В папку sport_hub скопировать файлы docker-compose.yml и nginx.conf из проекта.
 
@@ -92,12 +94,13 @@ sudo docker compose exec backend python manage.py create_su
 SECRET_KEY='KEY'
 DEBUG=True # True отладка включена, False отладка отключена
 DATABASE=Dev # Prod для PostgreSQL, Dev для SQLite3
-POSTGRES_DB=django
+POSTGRES_DB=django_db
 POSTGRES_USER=django_user
-POSTGRES_PASSWORD=password
+POSTGRES_PASSWORD=django_password
 DB_HOST=db
 DB_PORT=5432
 ALLOWED_HOSTS=127.0.0.1;localhost
+CSRF_TRUSTED_ORIGINS=http://127.0.0.1;http://localhost
 SU_NAME=admin
 SU_EMAIL=admin@mail.ru
 SU_PASSWORD=pass
