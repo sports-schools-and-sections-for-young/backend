@@ -5,29 +5,37 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-if os.name == 'nt':
-    VIRTUAL_ENV_BASE = os.environ['VIRTUAL_ENV']
-    os.environ['PATH'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
-    os.environ['PROJ_LIB'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
 # if os.name == 'nt':
-#     # import platform
+#     VIRTUAL_ENV_BASE = os.environ['VIRTUAL_ENV']
+#     os.environ['PATH'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+#     os.environ['PROJ_LIB'] = os.path.join(VIRTUAL_ENV_BASE, r'.\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+# if os.name == 'nt':
+#     import platform
 #     OSGEO4W = r"C:\OSGeo4W"
-#     # if '64' in platform.architecture()[0]:
-#     #     OSGEO4W += "64"
-#     # assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
+#     if '64' in platform.architecture()[0]:
+#         OSGEO4W += "64"
+#     assert os.path.isdir(OSGEO4W), "Directory does not exist: " + OSGEO4W
 #     os.environ['OSGEO4W_ROOT'] = OSGEO4W
 #     os.environ['GDAL_DATA'] = OSGEO4W + r"\share\gdal"
 #     os.environ['PROJ_LIB'] = OSGEO4W + r"\share\proj"
 #     os.environ['PATH'] = OSGEO4W + r"\bin;" + os.environ['PATH']
 #     GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307'
 
+GDAL_LIBRARY_PATH = ''
 load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(';')
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(';')
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,7 +53,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'organizations.apps.OrganizationsConfig',
     'sections.apps.SectionsConfig',
-    'django.contrib.gis',
+    # 'django.contrib.gis',
 ]
 
 MIDDLEWARE = [

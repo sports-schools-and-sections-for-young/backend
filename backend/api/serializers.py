@@ -121,12 +121,12 @@ class RewievSerializer(serializers.ModelSerializer):
         fields = ['rating']
 
 
-class AgeGroupSerializer(serializers.ModelSerializer):
-    """Сериализатор для возрастной группы(вспомагательный)."""
+# class AgeGroupSerializer(serializers.ModelSerializer):
+#     """Сериализатор для возрастной группы(вспомагательный)."""
 
-    class Meta:
-        model = AgeGroup
-        fields = '__all__'
+#     class Meta:
+#         model = AgeGroup
+#         fields = '__all__'
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
