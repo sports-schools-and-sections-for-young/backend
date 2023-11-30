@@ -1,7 +1,4 @@
 from django.test import TestCase
-from django.core.exceptions import ValidationError
-from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
 
 from organizations.models import (
     Address,
@@ -16,6 +13,7 @@ from sections.models import (
     DayOfWeek,
     SportType
 )
+from users.models import CustomUser
 
 
 class AddressModelTest(TestCase):
@@ -265,3 +263,26 @@ class DayOfWeekModelTest(TestCase):
         day_min = day._meta.get_field('title').validators[0]
         message = day_min.message
         self.assertEqual(message, 'Минимум 5 символов')
+
+
+class CustomUserTestModel(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = CustomUser.objects.create(
+            email='test',
+            username='тест'
+        )
+
+    def test_username_length(self):
+        user = CustomUserTestModel.user
+        username_length = user._meta.get_field('username').validators[0]
+        message = username_length.message
+        self.assertEqual(message, 'Минимум 5 символов')
+
+    def test_username_structure(self):
+        user = CustomUserTestModel.user
+        username_structure = user._meta.get_field('username').validators[1]
+        message = username_structure.message
+        self.assertEqual(message, 'Логин может содержать только символы '
+                         'английского алфавита и цифры.')

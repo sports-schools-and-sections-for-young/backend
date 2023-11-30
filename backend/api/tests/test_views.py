@@ -3,16 +3,11 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from sections.models import SportType
-
 
 class TestSportType(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        self.sport_type = SportType.objects.create(
-            title='Test'
-        )
 
     def test_sport_type_list(self):
         url = reverse('api:sport_types-list')

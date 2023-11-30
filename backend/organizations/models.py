@@ -82,7 +82,7 @@ class Address(models.Model):
 
     def __str__(self):
         return (f'{self.index}, {self.city}, {self.district}, {self.street}, '
-                f'{self.house}, {self.location}')
+                f'{self.house}')
 
     def save(self, *args, **kwargs):
         self.full_address = (f'{self.index} {self.city} {self.metro} '
