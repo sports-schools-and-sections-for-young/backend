@@ -79,8 +79,31 @@ class SearchSectionSerializer(serializers.ModelSerializer):
 
 
 class SportTypeSerializer(serializers.ModelSerializer):
-    """Сериализатор для видов спорта."""
+    """Сериализатор для отображения всех видов спорта."""
 
     class Meta:
         model = SportType
         fields = '__all__'
+
+
+class SportTypeCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для добавления вида спорта."""
+    title = serializers.CharField()
+
+    class Meta:
+        model = SportType
+        fields = '__all__'
+
+    # Метод для добавления вида спорта
+    def create(self, validated_data):
+        title_data = validated_data.pop('title')
+        first_word = title_data.split()[0]
+        if not first_word.istitle():
+            raise serializers.ValidationError(
+                "Название вида спорта должно начинаться с заглавной буквы."
+            )
+        if SportType.objects.filter(title__iexact=title_data).exists():
+            raise serializers.ValidationError(
+                "Такой вид спорта уже существует!"
+            )
+        return SportType.objects.create(title=title_data)

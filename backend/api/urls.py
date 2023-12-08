@@ -4,7 +4,8 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
-from .views import SearchSectionViewSet, SportTypeViewSet
+from .views import (SearchSectionViewSet, SportTypeCreateViewSet,
+                    SportTypeViewSet)
 
 app_name = 'api'
 
@@ -20,6 +21,9 @@ schema_view = get_schema_view(
 
 router = DefaultRouter()
 
+# Эндпойнт для добавления вида спорта
+router.register('create_sport_types', SportTypeCreateViewSet,
+                basename='create_sport_types')
 # Эндпойнт для поиска секций
 router.register('search_sections', SearchSectionViewSet,
                 basename='search_sections')
