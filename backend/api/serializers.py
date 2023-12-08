@@ -97,13 +97,18 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
     # Метод для добавления вида спорта
     def create(self, validated_data):
         title_data = validated_data.pop('title')
+
         first_word = title_data.split()[0]
         if not first_word.istitle():
             raise serializers.ValidationError(
-                "Название вида спорта должно начинаться с заглавной буквы."
+                'Название вида спорта должно начинаться с заглавной буквы!'
+            )
+        if not title_data.isalpha():
+            raise serializers.ValidationError(
+                'Название вида спорта должно содержать только буквы!'
             )
         if SportType.objects.filter(title__iexact=title_data).exists():
             raise serializers.ValidationError(
-                "Такой вид спорта уже существует!"
+                'Такой вид спорта уже существует!'
             )
         return SportType.objects.create(title=title_data)
