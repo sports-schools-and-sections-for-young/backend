@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator)
 from django.db import models
-from organizations.models import Address, PhoneNumber, SportOrganization
+from organizations.models import PhoneNumber, SportOrganization
 
 
 class SportType(models.Model):
@@ -90,12 +90,22 @@ class Section(models.Model):
         ],
         blank=False
     )
-    address = models.ForeignKey(
-        Address,
+    address = models.CharField(
         verbose_name='Адрес секции',
-        on_delete=models.SET_NULL,
-        null=True,
+        max_length=350,
         blank=False
+    )
+    latitude = models.DecimalField(
+        verbose_name='Широта',
+        max_digits=12,
+        decimal_places=6,
+        blank=True
+    )
+    longitude = models.DecimalField(
+        verbose_name='Долгота',
+        max_digits=12,
+        decimal_places=6,
+        blank=True
     )
     aviable = models.PositiveIntegerField(
         verbose_name='Наличие свободных мест',

@@ -1,14 +1,6 @@
 from haversine import haversine
 from rest_framework import serializers
-from sections.models import Address, PhoneOfSection, Section, SportType
-
-
-class AddressSerializer(serializers.ModelSerializer):
-    """Сериализатор для адреса секции или спортшколы."""
-
-    class Meta:
-        model = Address
-        fields = ('index', 'city', 'metro', 'district', 'street', 'house')
+from sections.models import PhoneOfSection, Section, SportType
 
 
 class SearchSectionSerializer(serializers.ModelSerializer):
@@ -19,13 +11,10 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='sport_type.title')
     site = serializers.CharField(source='sport_organization.site')
     age_group = serializers.SerializerMethodField()
-    address = AddressSerializer()
     schedule = serializers.SerializerMethodField()
     phone = serializers.SerializerMethodField()
     comment = serializers.SerializerMethodField()
     distance = serializers.SerializerMethodField()
-    latitude = serializers.CharField(source='address.latitude')
-    longitude = serializers.CharField(source='address.longitude')
 
     class Meta:
         model = Section
