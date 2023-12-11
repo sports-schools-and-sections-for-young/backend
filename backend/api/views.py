@@ -54,7 +54,7 @@ class RegisterViewSet(ModelViewSet):
     permission_classes = (AllowAny,)
 
 
-class CustomAutenticateToken(APIView):
+class CustomAuthenticationToken(APIView):
     serializer_class = CustomSerializers
     permission_classes = (AllowAny,)
 
@@ -68,8 +68,6 @@ class CustomAutenticateToken(APIView):
             token, created = Token.objects.get_or_create(user=user)
             return Response({
                 'token': token.key,
-                'username': user.username,
-                'email': user.email
             }, status=status.HTTP_200_OK)
         except serializers.ValidationError:
             ('Пользователь не найден')

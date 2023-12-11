@@ -5,7 +5,8 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
 from .views import (SearchSectionViewSet, SportTypeCreateViewSet,
-                    SportTypeViewSet, RegisterViewSet, CustomAutenticateToken)
+                    SportTypeViewSet, RegisterViewSet,
+                    CustomAuthenticationToken)
 
 app_name = 'api'
 
@@ -35,7 +36,7 @@ router.register('register', RegisterViewSet, basename='register')
 urlpatterns = [
     path('', include(router.urls)),
     # эндпоинт фвторизации
-    path('login/', CustomAutenticateToken.as_view()),
+    path('login/', CustomAuthenticationToken.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
