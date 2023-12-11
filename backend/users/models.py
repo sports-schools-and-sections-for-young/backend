@@ -29,6 +29,7 @@ class CustomUser(AbstractUser):
         unique=True,
         blank=False
     )
+    password = models.CharField(max_length=10)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
