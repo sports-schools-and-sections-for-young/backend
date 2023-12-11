@@ -1,8 +1,8 @@
 from haversine import haversine
 from rest_framework import serializers
+
 from sections.models import PhoneOfSection, Section, SportType
 from users.models import CustomUser
-from djoser.serializers import UserCreateSerializer
 
 
 class SearchSectionSerializer(serializers.ModelSerializer):
@@ -123,7 +123,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError('Пароли должны совпадать!')
 
 
-class CustomSerializers(UserCreateSerializer):
+class CustomSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser

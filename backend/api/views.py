@@ -11,6 +11,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from sections.models import Section, SportType
 from users.models import CustomUser
+
 from .filters import SearchSectionFilter, SportTypeFilter
 from .serializers import (CustomSerializers, SearchSectionSerializer,
                           SportTypeCreateSerializer,
