@@ -118,6 +118,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if password == check_password:
             user = CustomUser.objects.create(**validated_data,
                                              password=password)
+            # user.set_password('password')
             user.save()
             return user
         raise serializers.ValidationError('Пароли должны совпадать!')
