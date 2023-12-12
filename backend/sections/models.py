@@ -99,13 +99,17 @@ class Section(models.Model):
         verbose_name='Широта',
         max_digits=12,
         decimal_places=6,
-        blank=True
+        blank=True,
+        null=True,
+        default=0
     )
     longitude = models.DecimalField(
         verbose_name='Долгота',
         max_digits=12,
         decimal_places=6,
-        blank=True
+        blank=True,
+        null=True,
+        default=0
     )
     aviable = models.PositiveIntegerField(
         verbose_name='Наличие свободных мест',
