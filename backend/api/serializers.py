@@ -1,6 +1,8 @@
 from haversine import haversine
 from rest_framework import serializers
+
 from sections.models import PhoneOfSection, Section, SportType
+from users.models import CustomUser
 
 
 class SearchSectionSerializer(serializers.ModelSerializer):
@@ -101,3 +103,30 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
                 'Такой вид спорта уже существует!'
             )
         return SportType.objects.create(title=title_data)
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    check_password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password', 'check_password']
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        check_password = validated_data.pop('check_password')
+        if password == check_password:
+            user = CustomUser.objects.create(**validated_data,
+                                             password=password)
+            user.set_password('password')
+            user.save()
+            return user
+        raise serializers.ValidationError('Пароли должны совпадать!')
+
+
+class CustomSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password']

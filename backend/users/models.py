@@ -1,5 +1,6 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 
 
@@ -15,33 +16,20 @@ class CustomUser(AbstractUser):
         unique=True,
         blank=False
     )
-    username = models.CharField(
-        verbose_name='Логин',
-        max_length=60,
-        validators=[
-            MinLengthValidator(5, message='Минимум 5 символов'),
-            RegexValidator(
-                regex=r'^[a-z0-9]+$',
-                message='Логин может содержать только символы '
-                        'английского алфавита и цифры.'
-            ),
-        ],
-        unique=True,
-        blank=False
-    )
+    password = models.CharField(max_length=10)
+    username = models.CharField(max_length=12, unique=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
+    REQUIRED_FIELDS = ('first_name', 'last_name', 'username')
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        constraints = [
-            models.UniqueConstraint(
-                fields=('email', 'username'),
-                name='unique_email_username'
-            )
-        ]
+
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = uuid.uuid4().hex[:12]
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.get_full_name()

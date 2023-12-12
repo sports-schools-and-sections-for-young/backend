@@ -138,6 +138,12 @@ DJOSER = {
     'PERMISSIONS': {
         'user_create': ('rest_framework.permissions.AllowAny', ),
         'user_list': ('rest_framework.permissions.IsAdminUser', ),
+    },
+    # 'USER_CREATE_PASSWORD_RETYPE': True,
+    'SERIALIZERS': {
+        'user_create': 'api.serializers.RegisterSerializer',
+        'user': 'api.serializers.CustomSerializers',
+        # 'user': 'api.serializers
     }
 }
 
