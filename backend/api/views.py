@@ -1,5 +1,4 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import serializers
 from rest_framework import status
 from rest_framework.permissions import (AllowAny,
                                         IsAuthenticated,
@@ -46,12 +45,20 @@ class SportTypeCreateViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
 
-class RegisterViewSet(ModelViewSet):
-    """Вьюсет для регистрации."""
-    http_method_names = ('post',)
-    queryset = CustomUser.objects.all()
+class RegisterAPIView(APIView):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+        if CustomUser.objects.filter(email=email).exists():
+            return Response({'message': 'Пользователь с такими данными '
+                            'существует.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class CustomAuthenticationToken(APIView):
@@ -61,13 +68,14 @@ class CustomAuthenticationToken(APIView):
     def post(self, request):
         print(request)
         email = request.data.get('email')
-        password = request.data.get('password')
         try:
-            user = CustomUser.objects.get(email=email, password=password)
-            print(user)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({
-                'token': token.key,
-            }, status=status.HTTP_200_OK)
-        except serializers.ValidationError:
+            user = CustomUser.objects.get(email=email)
+            if user.is_authenticated:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key},
+                                status=status.HTTP_200_OK)
+            return Response({'message': 'Неверные данные'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        except CustomUser.DoesNotExist:
             ('Пользователь не найден')
+            return Response(status=status.HTTP_400_BAD_REQUEST)

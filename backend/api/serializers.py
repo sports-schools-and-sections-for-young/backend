@@ -107,6 +107,7 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     check_password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
@@ -118,7 +119,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if password == check_password:
             user = CustomUser.objects.create(**validated_data,
                                              password=password)
-            # user.set_password('password')
+            user.set_password('password')
             user.save()
             return user
         raise serializers.ValidationError('Пароли должны совпадать!')
