@@ -13,7 +13,7 @@ from users.models import CustomUser
 from .filters import SearchSectionFilter, SportTypeFilter
 from .serializers import (CustomUserSerializers, RegisterSerializer,
                           SearchSectionSerializer, SectionDeleteSerializer,
-                          SetionCreateSerializers,
+                          SectionCreateSerializers,
                           SportOrganizationCreateSerializers,
                           SportTypeCreateSerializer, SportTypeSerializer)
 
@@ -95,11 +95,11 @@ class SportOrganizationCreateViewSet(ModelViewSet):
             serializer.save(user=self.request.user)
 
 
-class SetionCreateViewSet(ModelViewSet):
+class SectionCreateViewSet(ModelViewSet):
     """Вьюсет для добавления секции спортшколы."""
     http_method_names = ('post', )
     queryset = Section.objects.all()
-    serializer_class = SetionCreateSerializers
+    serializer_class = SectionCreateSerializers
     permission_classes = (IsAuthenticated, )
 
 

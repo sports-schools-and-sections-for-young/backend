@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (CustomAuthenticationToken, RegisterAPIView,
                     SearchSectionViewSet, SectionDeleteAPIView,
-                    SetionCreateViewSet, SportOrganizationCreateViewSet,
+                    SectionCreateViewSet, SportOrganizationCreateViewSet,
                     SportTypeCreateViewSet, SportTypeViewSet)
 
 app_name = 'api'
@@ -24,7 +24,7 @@ schema_view = get_schema_view(
 router = DefaultRouter()
 
 # Эндпойнт для добавления секции
-router.register('create_section', SetionCreateViewSet,
+router.register('create_section', SectionCreateViewSet,
                 basename='create_section')
 # Эндпойнт для добавления спортшколы
 router.register('create_sport_organization', SportOrganizationCreateViewSet,

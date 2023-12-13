@@ -158,7 +158,7 @@ class SportOrganizationCreateSerializers(serializers.ModelSerializer):
         return data
 
 
-class SetionCreateSerializers(serializers.ModelSerializer):
+class SectionCreateSerializers(serializers.ModelSerializer):
     """Сериализатор для добавления секции спортшколы."""
     # sport_organization = serializers.PrimaryKeyRelatedField(
     #     queryset=SportOrganization.objects.all()
