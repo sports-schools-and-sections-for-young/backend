@@ -244,3 +244,10 @@ class SectionDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Section
         fields = '__all__'
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    """Сериализатор для личного кабинета организации спортивной школы."""
+    class Meta:
+        model = SportOrganization
+        fields = ('id', 'title', 'address')

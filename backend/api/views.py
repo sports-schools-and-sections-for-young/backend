@@ -11,9 +11,9 @@ from sections.models import Section, SportType
 from users.models import CustomUser
 
 from .filters import SearchSectionFilter, SportTypeFilter
-from .serializers import (CustomUserSerializers, RegisterSerializer,
-                          SearchSectionSerializer, SectionDeleteSerializer,
-                          SectionCreateSerializers,
+from .serializers import (CustomUserSerializers, ProfileSerializer,
+                          RegisterSerializer, SearchSectionSerializer,
+                          SectionCreateSerializers, SectionDeleteSerializer,
                           SportOrganizationCreateSerializers,
                           SportTypeCreateSerializer, SportTypeSerializer)
 
@@ -112,7 +112,7 @@ class SectionDeleteAPIView(APIView):
 
     def delete(self, request, id):
         try:
-            section = Section.objects.get(id=id)
+            section = self.queryset.get(id=id)
             if section.sport_organization.user != request.user:
                 return Response(
                     {'message': 'У вас нет прав на удаление этой секции!'},
@@ -123,4 +123,27 @@ class SectionDeleteAPIView(APIView):
                             status=status.HTTP_204_NO_CONTENT)
         except Section.DoesNotExist:
             return Response({'message': 'Секция не существует!'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+
+class ProfileAPIView(APIView):
+    """Вьюсет для отображения личного кабинета."""
+    http_method_names = ('get', )
+    queryset = SportOrganization.objects.all()
+    serializer_class = ProfileSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, id):
+        try:
+            profile = self.queryset.get(id=id)
+            if profile.user != request.user:
+                return Response(
+                    {'message':
+                        'У вас нет прав для просмотра этой спортивной школы!'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            serializer = self.serializer_class(profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except SportOrganization.DoesNotExist:
+            return Response({'message': 'Спортивная школа не существует!'},
                             status=status.HTTP_404_NOT_FOUND)

@@ -4,9 +4,9 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
-from .views import (CustomAuthenticationToken, RegisterAPIView,
-                    SearchSectionViewSet, SectionDeleteAPIView,
-                    SectionCreateViewSet, SportOrganizationCreateViewSet,
+from .views import (CustomAuthenticationToken, ProfileAPIView, RegisterAPIView,
+                    SearchSectionViewSet, SectionCreateViewSet,
+                    SectionDeleteAPIView, SportOrganizationCreateViewSet,
                     SportTypeCreateViewSet, SportTypeViewSet)
 
 app_name = 'api'
@@ -42,11 +42,14 @@ urlpatterns = [
     path('', include(router.urls)),
     # Эндпойнт для авторизации пользователя
     path('login/', CustomAuthenticationToken.as_view()),
+    # Эндпойнт для регистрации пользователя
+    path('register/', RegisterAPIView.as_view()),
     # Эндпойнт для удаления секции
     path('section/<int:id>/delete/',
          SectionDeleteAPIView.as_view(), name='section_delete'),
-    # Эндпойнт для регистрации пользователя
-    path('register/', RegisterAPIView.as_view()),
+    # Эндпойнт для просмотра спортшколы
+    path('profile/<int:id>/',
+         ProfileAPIView.as_view(), name='section_delete'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
