@@ -66,7 +66,6 @@ class CustomAuthenticationToken(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        print(request)
         email = request.data.get('email')
         try:
             user = CustomUser.objects.get(email=email)
@@ -79,3 +78,12 @@ class CustomAuthenticationToken(APIView):
         except CustomUser.DoesNotExist:
             ('Пользователь не найден')
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteUserAPIView(APIView):
+    serializer_class = CustomSerializers
+
+    def delete(self, request):
+        serializer = CustomSerializers(request.user)
+        del serializer
+        return Response(status=status.HTTP_204_NO_CONTENT)

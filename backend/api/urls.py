@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (SearchSectionViewSet, SportTypeCreateViewSet,
                     SportTypeViewSet, RegisterAPIView,
-                    CustomAuthenticationToken)
+                    CustomAuthenticationToken, DeleteUserAPIView)
 
 app_name = 'api'
 
@@ -37,6 +37,7 @@ urlpatterns = [
     path('login/', CustomAuthenticationToken.as_view()),
     # эндпоинт для регистрации
     path('register/', RegisterAPIView.as_view()),
+    path('profile/delete', DeleteUserAPIView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),
