@@ -12,7 +12,8 @@ from users.models import CustomUser
 
 from .filters import SearchSectionFilter, SportTypeFilter
 from .serializers import (CustomUserSerializers, RegisterSerializer,
-                          SearchSectionSerializer,
+                          SearchSectionSerializer, SectionDeleteSerializer,
+                          SetionCreateSerializers,
                           SportOrganizationCreateSerializers,
                           SportTypeCreateSerializer, SportTypeSerializer)
 
@@ -78,8 +79,8 @@ class CustomAuthenticationToken(APIView):
             return Response({'message': 'Неверные данные'},
                             status=status.HTTP_400_BAD_REQUEST)
         except CustomUser.DoesNotExist:
-            ('Пользователь не найден')
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Пользователь не найден'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class SportOrganizationCreateViewSet(ModelViewSet):
@@ -92,3 +93,34 @@ class SportOrganizationCreateViewSet(ModelViewSet):
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:
             serializer.save(user=self.request.user)
+
+
+class SetionCreateViewSet(ModelViewSet):
+    """Вьюсет для добавления секции спортшколы."""
+    http_method_names = ('post', )
+    queryset = Section.objects.all()
+    serializer_class = SetionCreateSerializers
+    permission_classes = (IsAuthenticated, )
+
+
+class SectionDeleteAPIView(APIView):
+    """Вьюсет для удаления секции спортшколы."""
+    http_method_names = ('delete', )
+    queryset = Section.objects.all()
+    serializer_class = SectionDeleteSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def delete(self, request, id):
+        try:
+            section = Section.objects.get(id=id)
+            if section.sport_organization.user != request.user:
+                return Response(
+                    {'message': 'У вас нет прав на удаление этой секции!'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            section.delete()
+            return Response({'message': 'Секция успешно удалена.'},
+                            status=status.HTTP_204_NO_CONTENT)
+        except Section.DoesNotExist:
+            return Response({'message': 'Секция не существует!'},
+                            status=status.HTTP_404_NOT_FOUND)

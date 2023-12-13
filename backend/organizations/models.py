@@ -49,6 +49,14 @@ class SportOrganization(models.Model):
         max_length=20000,
         blank=False
     )
+    phone = models.CharField(
+        verbose_name='Телефон спортивной школы',
+        max_length=18,
+        validators=[
+            MinLengthValidator(14, message='Минимум 14 символов'),
+        ],
+        blank=False
+    )
 
     class Meta:
         verbose_name = 'Спортивная школа'
@@ -56,50 +64,3 @@ class SportOrganization(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class PhoneNumber(models.Model):
-    """Модель номера телефона."""
-    value = models.CharField(
-        verbose_name='Номер телефона',
-        max_length=18,
-        validators=[
-            MinLengthValidator(14, message='Минимум 14 символов'),
-        ],
-        blank=False
-    )
-    comment = models.CharField(
-        verbose_name='Комментарий к номеру телефона',
-        max_length=30,
-        blank=True
-    )
-
-    class Meta:
-        verbose_name = 'Номер телефона'
-        verbose_name_plural = 'Номера телефонов'
-
-    def __str__(self):
-        return self.value
-
-
-class PhoneOfOrganization(models.Model):
-    """Модель, которая связывает номера телефона и спортшколу."""
-    phone = models.ForeignKey(
-        PhoneNumber,
-        verbose_name='Телефон',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-    sport_school = models.ForeignKey(
-        SportOrganization,
-        verbose_name='Спортивная школа',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'Телефон спортшколы'
-        verbose_name_plural = 'Телефоны спортшколы'
-
-    def __str__(self):
-        return f'Телефон спортшколы {self.sport_school}'

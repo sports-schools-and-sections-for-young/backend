@@ -2,7 +2,7 @@ from djoser.serializers import UserSerializer
 from haversine import haversine
 from organizations.models import SportOrganization
 from rest_framework import serializers
-from sections.models import PhoneOfSection, Section, SportType
+from sections.models import DayOfWeek, Section, SportType
 from users.models import CustomUser
 
 
@@ -15,8 +15,9 @@ class SearchSectionSerializer(serializers.ModelSerializer):
     site = serializers.CharField(source='sport_organization.site')
     age_group = serializers.SerializerMethodField()
     schedule = serializers.SerializerMethodField()
-    phone = serializers.SerializerMethodField()
-    comment = serializers.SerializerMethodField()
+    phone = serializers.CharField(source='sport_organization.phone')
+    # phone = serializers.SerializerMethodField()
+    # comment = serializers.SerializerMethodField()
     distance = serializers.SerializerMethodField()
 
     class Meta:
@@ -37,18 +38,18 @@ class SearchSectionSerializer(serializers.ModelSerializer):
             return schedule
 
     # Получение телефона секции
-    def phone_of_section(self, obj):
-        return PhoneOfSection.objects.filter(section=obj).first()
+    # def phone_of_section(self, obj):
+    #     return PhoneOfSection.objects.filter(section=obj).first()
 
     # Отображение телефона секции
-    def get_phone(self, obj):
-        return self.phone_of_section(obj).phone.value
+    # def get_phone(self, obj):
+    #     return self.phone_of_section(obj).phone.value
 
     # Отображение комментария к телефону секции
-    def get_comment(self, obj):
-        comment = self.phone_of_section(obj).phone.comment
-        if comment:
-            return comment
+    # def get_comment(self, obj):
+    #     comment = self.phone_of_section(obj).phone.comment
+    #     if comment:
+    #         return comment
 
     # Отображение расстояния от пользователя до секции
     def get_distance(self, obj):
@@ -93,15 +94,17 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
         first_word = title_data.split()[0]
         if not first_word.istitle():
             raise serializers.ValidationError(
-                'Название вида спорта должно начинаться с заглавной буквы!'
+                {'message':
+                 'Название вида спорта должно начинаться с заглавной буквы!'}
             )
         if not title_data.replace(' ', '').isalpha():
             raise serializers.ValidationError(
-                'Название вида спорта должно содержать только буквы!'
+                {'message':
+                 'Название вида спорта должно содержать только буквы!'}
             )
         if SportType.objects.filter(title__iexact=title_data).exists():
             raise serializers.ValidationError(
-                'Такой вид спорта уже существует!'
+                {'message': 'Такой вид спорта уже существует!'}
             )
         return SportType.objects.create(title=title_data)
 
@@ -143,4 +146,92 @@ class SportOrganizationCreateSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = SportOrganization
+        fields = '__all__'
+
+    def validate(self, data):
+        user = self.context['request'].user
+        if SportOrganization.objects.filter(user=user).exists():
+            raise serializers.ValidationError(
+                {'message':
+                 'У пользователя может быть только одна спортшкола.'}
+            )
+        return data
+
+
+class SetionCreateSerializers(serializers.ModelSerializer):
+    """Сериализатор для добавления секции спортшколы."""
+    # sport_organization = serializers.PrimaryKeyRelatedField(
+    #     queryset=SportOrganization.objects.all()
+    # )
+    schedule = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=DayOfWeek.objects.all()
+    )
+
+    class Meta:
+        model = Section
+        fields = (
+            'id',
+            # 'sport_organization',
+            'title',
+            'gender',
+            'sport_type',
+            'schedule',
+            'price',
+            'address',
+            'year_from',
+            'year_until',
+        )
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        sport_organization_data = SportOrganization.objects.get(user=user)
+        title_data = validated_data.pop('title')
+
+        first_word = title_data.split()[0]
+        if not first_word.istitle():
+            raise serializers.ValidationError(
+                {'message':
+                 'Название секции должно начинаться с заглавной буквы!'}
+            )
+        if not title_data.replace(' ', '').isalpha():
+            raise serializers.ValidationError(
+                {'message': 'Название секции должно содержать только буквы!'}
+            )
+        schedule_data = validated_data.pop('schedule')
+        section = Section.objects.create(
+            sport_organization=sport_organization_data,
+            **validated_data
+        )
+        section.schedule.set(schedule_data)
+        return section
+
+    def validate(self, data):
+        if data['year_from'] > data['year_until']:
+            raise serializers.ValidationError(
+                {'message': 'Возрастная группа задана неверно'}
+            )
+        return data
+
+    # Проверка схожесть наименований секций
+    def validate_title(self, title):
+        if Section.objects.filter(title=title).exists():
+            raise serializers.ValidationError(
+                {'message': f'Секция с таким именем {title} уже существует'}
+            )
+        return title
+
+    # Проверка положительного значения цены
+    def validate_price(self, price):
+        if price < 0:
+            raise serializers.ValidationError(
+                {'message': 'Цена должна быть положительным числом'}
+            )
+        return price
+
+
+class SectionDeleteSerializer(serializers.ModelSerializer):
+    """Сериализатор для удаления секции спортшколы."""
+    class Meta:
+        model = Section
         fields = '__all__'
