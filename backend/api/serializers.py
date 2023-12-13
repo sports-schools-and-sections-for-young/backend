@@ -270,4 +270,4 @@ class ProfileSerializer(serializers.ModelSerializer):
     """Сериализатор для личного кабинета организации спортивной школы."""
     class Meta:
         model = SportOrganization
-        fields = ('id', 'title', 'address')
+        fields = '__all__'
