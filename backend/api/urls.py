@@ -5,9 +5,11 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
 from .views import (CustomAuthenticationToken, ProfileAPIView, RegisterAPIView,
-                    SearchSectionViewSet, SectionCreateViewSet,
-                    SectionDeleteAPIView, SportOrganizationCreateViewSet,
-                    SportTypeCreateViewSet, SportTypeViewSet)
+                    SearchSectionViewSet, SectionAPIView, SectionCreateViewSet,
+                    SectionDeleteAPIView, SectionUpdateViewSet,
+                    SportOrganizationCreateViewSet,
+                    SportOrganizationUpdateViewSet, SportTypeCreateViewSet,
+                    SportTypeViewSet)
 
 app_name = 'api'
 
@@ -50,6 +52,14 @@ urlpatterns = [
     # Эндпойнт для просмотра спортшколы
     path('profile/<int:id>/',
          ProfileAPIView.as_view(), name='section_delete'),
+    # Эндпойнт для редактирования спортшколы
+    path('sport_school/<int:pk>/update/',
+         SportOrganizationUpdateViewSet.as_view({'patch': 'partial_update'})),
+    # Эндпойнт для просмотра всех секции пользователя в профиле
+    path('section/', SectionAPIView.as_view(), name='section'),
+    # Эндпойнт для редактирования секции
+    path('section/<int:pk>/update/', SectionUpdateViewSet.as_view(
+        {'patch': 'partial_update'})),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0),

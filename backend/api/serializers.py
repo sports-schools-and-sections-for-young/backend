@@ -130,14 +130,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError('Пароли должны совпадать!')
 
 
-class CustomUserSerializers(serializers.ModelSerializer):
-    """Сериализатор для кастомного пользователя."""
+class CustomUserSerializer(serializers.ModelSerializer):
+    """Сериализатор для пользователя."""
     class Meta:
         model = CustomUser
         fields = ('email', 'password')
 
 
-class SportOrganizationCreateSerializers(serializers.ModelSerializer):
+class SportOrganizationCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления спортшколы."""
     user = UserSerializer(
         read_only=True,
@@ -158,11 +158,24 @@ class SportOrganizationCreateSerializers(serializers.ModelSerializer):
         return data
 
 
-class SectionCreateSerializers(serializers.ModelSerializer):
+class SectionSerializer(serializers.ModelSerializer):
+    """Сериализатор для просмотра всех секции пользователя в профиле."""
+
+    class Meta:
+        model = Section
+        fields = '__all__'
+
+
+class SportOrganizationUpdateSerializer(serializers.ModelSerializer):
+    """Сериализатор для редактирования спортшколы."""
+
+    class Meta:
+        model = SportOrganization
+        fields = '__all__'
+
+
+class SectionCreateSerializer(serializers.ModelSerializer):
     """Сериализатор для добавления секции спортшколы."""
-    # sport_organization = serializers.PrimaryKeyRelatedField(
-    #     queryset=SportOrganization.objects.all()
-    # )
     schedule = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=DayOfWeek.objects.all()
@@ -172,7 +185,6 @@ class SectionCreateSerializers(serializers.ModelSerializer):
         model = Section
         fields = (
             'id',
-            # 'sport_organization',
             'title',
             'gender',
             'sport_type',
@@ -237,6 +249,14 @@ class SectionCreateSerializers(serializers.ModelSerializer):
                 {'message': 'Цена должна быть положительным числом'}
             )
         return price
+
+
+class SectionUpdateSerializer(serializers.ModelSerializer):
+    """Сериализатор для редактирования секции спортшколы."""
+
+    class Meta:
+        model = Section
+        fields = '__all__'
 
 
 class SectionDeleteSerializer(serializers.ModelSerializer):

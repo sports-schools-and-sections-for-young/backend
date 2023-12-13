@@ -11,10 +11,13 @@ from sections.models import Section, SportType
 from users.models import CustomUser
 
 from .filters import SearchSectionFilter, SportTypeFilter
-from .serializers import (CustomUserSerializers, ProfileSerializer,
+from .pagination import CustomPageNumberPagination
+from .serializers import (CustomUserSerializer, ProfileSerializer,
                           RegisterSerializer, SearchSectionSerializer,
-                          SectionCreateSerializers, SectionDeleteSerializer,
-                          SportOrganizationCreateSerializers,
+                          SectionCreateSerializer, SectionDeleteSerializer,
+                          SectionSerializer, SectionUpdateSerializer,
+                          SportOrganizationCreateSerializer,
+                          SportOrganizationUpdateSerializer,
                           SportTypeCreateSerializer, SportTypeSerializer)
 
 
@@ -26,6 +29,7 @@ class SearchSectionViewSet(ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = SearchSectionFilter
+    pagination_class = CustomPageNumberPagination
 
 
 class SportTypeViewSet(ModelViewSet):
@@ -65,7 +69,7 @@ class RegisterAPIView(APIView):
 
 class CustomAuthenticationToken(APIView):
     """Вьюсет для авторизации пользователя."""
-    serializer_class = CustomUserSerializers
+    serializer_class = CustomUserSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -87,7 +91,7 @@ class SportOrganizationCreateViewSet(ModelViewSet):
     """Вьюсет для добавления спортшколы."""
     http_method_names = ('post', )
     queryset = SportOrganization.objects.all()
-    serializer_class = SportOrganizationCreateSerializers
+    serializer_class = SportOrganizationCreateSerializer
     permission_classes = (IsAuthenticated, )
 
     def perform_create(self, serializer):
@@ -95,11 +99,56 @@ class SportOrganizationCreateViewSet(ModelViewSet):
             serializer.save(user=self.request.user)
 
 
+class SportOrganizationUpdateViewSet(ModelViewSet):
+    """Вьюсет для редактирования спортшколы."""
+    http_method_names = ('patch', )
+    queryset = SportOrganization.objects.all()
+    serializer_class = SportOrganizationUpdateSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user != request.user:
+            return Response(
+                {'message':
+                    'Вы не являетесь владельцем этой спортивной организации!'},
+                status=status.HTTP_403_FORBIDDEN)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+
+class SectionAPIView(APIView):
+    """Вьюсет для просмотра всех секции пользователя в профиле."""
+    http_method_names = ('get', )
+    queryset = Section.objects.all()
+    serializer_class = SectionSerializer
+    permission_classes = (IsAuthenticated, )
+    pagination_class = CustomPageNumberPagination
+
+    def get(self, request):
+        sections = Section.objects.filter(
+            sport_organization__user=request.user
+        )
+        serializer = SectionSerializer(sections, many=True)
+        return Response(serializer.data)
+
+
 class SectionCreateViewSet(ModelViewSet):
     """Вьюсет для добавления секции спортшколы."""
     http_method_names = ('post', )
     queryset = Section.objects.all()
-    serializer_class = SectionCreateSerializers
+    serializer_class = SectionCreateSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class SectionUpdateViewSet(ModelViewSet):
+    """Вьюсет для редактирования секции спортшколы."""
+    http_method_names = ('patch', )
+    queryset = Section.objects.all()
+    serializer_class = SectionUpdateSerializer
     permission_classes = (IsAuthenticated, )
 
 
