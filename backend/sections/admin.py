@@ -26,6 +26,7 @@ class SectionAdmin(admin.ModelAdmin):
     # Отображение дней работы секции в админке
     def get_schedule(self, obj):
         return ", ".join([day.title for day in obj.schedule.all()])
+    get_schedule.short_description = 'Расписание'
 
 
 @admin.register(DayOfWeek)
