@@ -1,20 +1,23 @@
 from django.core.validators import MinLengthValidator
 from django.db import models
+from users.models import CustomUser
 
 
 class SportOrganization(models.Model):
-    """
-    Модель спортшколы.
-    Алгоритм добавления спортшколы: пользователь регистрируется на сайте со
-    следующими полями: логин, e-mail, имя, фамилия, пароль. Затем пользователь
-    авторизуется на сайте и в личном кабинете добавляет спортшколу.
-    """
+    """Модель спортшколы. """
+    user = models.ForeignKey(
+        CustomUser,
+        verbose_name='Владелец',
+        on_delete=models.CASCADE,
+        blank=False
+    )
     title = models.CharField(
-        verbose_name='Название организации',
+        verbose_name='Название спортивной школы',
         max_length=255,
         validators=[
             MinLengthValidator(5, message='Минимум 5 символов')
         ],
+        unique=True,
         blank=False
     )
     logo = models.ImageField(
@@ -28,7 +31,7 @@ class SportOrganization(models.Model):
         blank=False
     )
     email = models.EmailField(
-        verbose_name='Адрес электронной почты',
+        verbose_name='Электронная почта',
         max_length=320,
         validators=[
             MinLengthValidator(5, message='Минимум 5 символов')
