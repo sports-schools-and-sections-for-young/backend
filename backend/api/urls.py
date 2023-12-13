@@ -4,9 +4,9 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
-from .views import (SearchSectionViewSet, SportTypeCreateViewSet,
-                    SportTypeViewSet, RegisterAPIView,
-                    CustomAuthenticationToken)
+from .views import (CustomAuthenticationToken, RegisterAPIView,
+                    SearchSectionViewSet, SportOrganizationCreateViewSet,
+                    SportTypeCreateViewSet, SportTypeViewSet)
 
 app_name = 'api'
 
@@ -22,6 +22,9 @@ schema_view = get_schema_view(
 
 router = DefaultRouter()
 
+# Эндпойнт для добавления спортшколы
+router.register('create_sport_organization', SportOrganizationCreateViewSet,
+                basename='create_sport_organization')
 # Эндпойнт для добавления вида спорта
 router.register('create_sport_types', SportTypeCreateViewSet,
                 basename='create_sport_types')
@@ -33,9 +36,9 @@ router.register('sport_types', SportTypeViewSet, basename='sport_types')
 
 urlpatterns = [
     path('', include(router.urls)),
-    # эндпоинт фвторизации
+    # Эндпойнт для авторизации пользователя
     path('login/', CustomAuthenticationToken.as_view()),
-    # эндпоинт для регистрации
+    # Эндпойнт для регистрации пользователя
     path('register/', RegisterAPIView.as_view()),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),

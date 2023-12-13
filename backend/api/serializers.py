@@ -1,6 +1,7 @@
+from djoser.serializers import UserSerializer
 from haversine import haversine
+from organizations.models import SportOrganization
 from rest_framework import serializers
-
 from sections.models import PhoneOfSection, Section, SportType
 from users.models import CustomUser
 
@@ -106,12 +107,13 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
+    """Сериализатор для регистрации пользователя."""
     check_password = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password', 'check_password']
+        fields = ('email', 'password', 'check_password')
 
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -125,8 +127,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError('Пароли должны совпадать!')
 
 
-class CustomSerializers(serializers.ModelSerializer):
-
+class CustomUserSerializers(serializers.ModelSerializer):
+    """Сериализатор для кастомного пользователя."""
     class Meta:
         model = CustomUser
-        fields = ['email', 'password']
+        fields = ('email', 'password')
+
+
+class SportOrganizationCreateSerializers(serializers.ModelSerializer):
+    """Сериализатор для добавления спортшколы."""
+    user = UserSerializer(
+        read_only=True,
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = SportOrganization
+        fields = '__all__'

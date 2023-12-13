@@ -1,20 +1,20 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from organizations.models import SportOrganization
 from rest_framework import status
-from rest_framework.permissions import (AllowAny,
-                                        IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import (AllowAny, IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
 from sections.models import Section, SportType
 from users.models import CustomUser
 
 from .filters import SearchSectionFilter, SportTypeFilter
-from .serializers import (CustomSerializers, SearchSectionSerializer,
-                          SportTypeCreateSerializer,
-                          SportTypeSerializer, RegisterSerializer)
+from .serializers import (CustomUserSerializers, RegisterSerializer,
+                          SearchSectionSerializer,
+                          SportOrganizationCreateSerializers,
+                          SportTypeCreateSerializer, SportTypeSerializer)
 
 
 class SearchSectionViewSet(ModelViewSet):
@@ -46,6 +46,7 @@ class SportTypeCreateViewSet(ModelViewSet):
 
 
 class RegisterAPIView(APIView):
+    """Вьюсет для регистрации пользователя."""
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
 
@@ -62,16 +63,16 @@ class RegisterAPIView(APIView):
 
 
 class CustomAuthenticationToken(APIView):
-    serializer_class = CustomSerializers
+    """Вьюсет для авторизации пользователя."""
+    serializer_class = CustomUserSerializers
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        print(request)
         email = request.data.get('email')
         try:
             user = CustomUser.objects.get(email=email)
             if user.is_authenticated:
-                token, created = Token.objects.get_or_create(user=user)
+                token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key},
                                 status=status.HTTP_200_OK)
             return Response({'message': 'Неверные данные'},
@@ -79,3 +80,15 @@ class CustomAuthenticationToken(APIView):
         except CustomUser.DoesNotExist:
             ('Пользователь не найден')
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class SportOrganizationCreateViewSet(ModelViewSet):
+    """Вьюсет для добавления спортшколы."""
+    http_method_names = ('post', )
+    queryset = SportOrganization.objects.all()
+    serializer_class = SportOrganizationCreateSerializers
+    permission_classes = (IsAuthenticated, )
+
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(user=self.request.user)
