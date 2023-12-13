@@ -181,13 +181,14 @@ class SetionCreateSerializers(serializers.ModelSerializer):
             'address',
             'year_from',
             'year_until',
+            'latitude',
+            'longitude'
         )
 
     def create(self, validated_data):
         user = self.context['request'].user
         sport_organization_data = SportOrganization.objects.get(user=user)
         title_data = validated_data.pop('title')
-
         first_word = title_data.split()[0]
         if not first_word.istitle():
             raise serializers.ValidationError(
@@ -199,8 +200,16 @@ class SetionCreateSerializers(serializers.ModelSerializer):
                 {'message': 'Название секции должно содержать только буквы!'}
             )
         schedule_data = validated_data.pop('schedule')
+        section_lat = 0
+        section_lon = 0
+        coords = self.context.get('request').query_params.get('coords', None)
+        if coords:
+            section_lat, section_lon = map(float, coords.split(':'))
         section = Section.objects.create(
             sport_organization=sport_organization_data,
+            title=title_data,
+            latitude=section_lat,
+            longitude=section_lon,
             **validated_data
         )
         section.schedule.set(schedule_data)
