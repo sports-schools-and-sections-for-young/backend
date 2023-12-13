@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator)
 from django.db import models
-from organizations.models import PhoneNumber, SportOrganization
+from organizations.models import SportOrganization
 
 
 class SportType(models.Model):
@@ -90,6 +90,14 @@ class Section(models.Model):
         ],
         blank=False
     )
+    # phone = models.CharField(
+    #     verbose_name='Телефон',
+    #     max_length=18,
+    #     validators=[
+    #         MinLengthValidator(14, message='Минимум 14 символов'),
+    #     ],
+    #     blank=False
+    # )
     address = models.CharField(
         verbose_name='Адрес секции',
         max_length=350,
@@ -99,13 +107,17 @@ class Section(models.Model):
         verbose_name='Широта',
         max_digits=12,
         decimal_places=6,
-        blank=True
+        blank=True,
+        null=True,
+        default=0
     )
     longitude = models.DecimalField(
         verbose_name='Долгота',
         max_digits=12,
         decimal_places=6,
-        blank=True
+        blank=True,
+        null=True,
+        default=0
     )
     aviable = models.PositiveIntegerField(
         verbose_name='Наличие свободных мест',
@@ -138,29 +150,6 @@ class Section(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class PhoneOfSection(models.Model):
-    """Модель, которая связывает номер телефона и секцию спортшколы."""
-    phone = models.ForeignKey(
-        PhoneNumber,
-        verbose_name='Номер телефона',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-    section = models.ForeignKey(
-        Section,
-        verbose_name='Секция спортивной школы',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'Телефон секции'
-        verbose_name_plural = 'Телефоны секции'
-
-    def __str__(self):
-        return self.phone.value
 
 
 class PhotoOfSection(models.Model):
