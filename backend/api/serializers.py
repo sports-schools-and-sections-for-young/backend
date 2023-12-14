@@ -159,7 +159,7 @@ class SportOrganizationUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SportOrganization
-        fields = '__all__'
+        exclude = ('user', )
 
 
 class SectionCreateSerializer(serializers.ModelSerializer):
