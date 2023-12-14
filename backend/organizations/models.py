@@ -20,11 +20,6 @@ class SportOrganization(models.Model):
         unique=True,
         blank=False
     )
-    logo = models.ImageField(
-        verbose_name='Логотип организации',
-        upload_to='img/organizations',
-        blank=True
-    )
     address = models.CharField(
         verbose_name='Адрес спортивной школы',
         max_length=350,
@@ -43,11 +38,6 @@ class SportOrganization(models.Model):
         verbose_name='Сайт или страничка в VK',
         max_length=255,
         blank=True
-    )
-    description = models.TextField(
-        verbose_name='Описание спортивной школы',
-        max_length=20000,
-        blank=False
     )
     phone = models.CharField(
         verbose_name='Телефон спортивной школы',
