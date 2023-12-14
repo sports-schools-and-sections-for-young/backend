@@ -89,13 +89,21 @@ class CustomAuthenticationToken(APIView):
 
 
 class DeleteUserAPIView(APIView):
+    """Вьюсет для удаления пользователя."""
+    http_method_names = ('delete', )
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticated, )
 
     def delete(self, request, id):
         user = get_object_or_404(CustomUser, id=id)
+        if user != request.user:
+            return Response(
+                {'message':
+                    'У вас нет прав для удаления этого пользователя!'},
+                status=status.HTTP_403_FORBIDDEN
+            )
         user.delete()
-        return Response({'message': "Пользователь успешно удален"},
+        return Response({'message': 'Пользователь успешно удален!'},
                         status=status.HTTP_204_NO_CONTENT)
 
 
