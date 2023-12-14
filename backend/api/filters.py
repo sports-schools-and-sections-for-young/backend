@@ -6,8 +6,8 @@ from sections.models import DayOfWeek, Section, SportType
 class SearchSectionFilter(FilterSet):
     """
     Фильтр для поиска секций по следующим полям: пол ребенка, вид спорта,
-    возраст ребенка, стоимость занятий, адрес секции, дням работы секции,
-    расстоянию.
+    возраст ребенка, стоимость занятий, дням работы секции, расстоянию до 
+    секции.
     """
     age_group = filters.NumberFilter(
         label='Возраст ребенка',
@@ -44,13 +44,6 @@ class SearchSectionFilter(FilterSet):
     # Фильтр по стоимости занятий
     def get_price(self, queryset, name, value):
         return queryset.filter(price__gte=0, price__lte=value)
-
-    # Фильтр по адресу секции
-    def get_address(self, queryset, name, value):
-        for item in value.split():
-            queryset = queryset.filter(
-                address__full_address__icontains=item)
-        return queryset
 
     # Фильтр по расстоянию
     def get_distance(self, queryset, name, value):

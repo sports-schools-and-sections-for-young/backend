@@ -1,5 +1,5 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from organizations.models import SportOrganization
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -53,8 +53,9 @@ class SportTypeCreateViewSet(ModelViewSet):
 
 class RegisterAPIView(APIView):
     """Вьюсет для регистрации пользователя."""
+    http_method_names = ('post', )
     serializer_class = RegisterSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -62,7 +63,7 @@ class RegisterAPIView(APIView):
         email = serializer.validated_data['email']
         if CustomUser.objects.filter(email=email).exists():
             return Response({'message': 'Пользователь с такими данными '
-                            'существует.'},
+                            'существует!'},
                             status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -70,8 +71,9 @@ class RegisterAPIView(APIView):
 
 class CustomAuthenticationToken(APIView):
     """Вьюсет для авторизации пользователя."""
+    http_method_names = ('post', )
     serializer_class = CustomUserSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (AllowAny, )
 
     def post(self, request):
         email = request.data.get('email')
@@ -81,10 +83,10 @@ class CustomAuthenticationToken(APIView):
                 token, _ = Token.objects.get_or_create(user=user)
                 return Response({'token': token.key},
                                 status=status.HTTP_200_OK)
-            return Response({'message': 'Неверные данные'},
+            return Response({'message': 'Неверные данные!'},
                             status=status.HTTP_400_BAD_REQUEST)
         except CustomUser.DoesNotExist:
-            return Response({'message': 'Пользователь не найден'},
+            return Response({'message': 'Пользователь не найден!'},
                             status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -135,7 +137,7 @@ class SportOrganizationUpdateViewSet(ModelViewSet):
             if instance.user != request.user:
                 return Response(
                     {'message':
-                     'Вы не являетесь владельцем этой спортивной организации!'},
+                     'Вы не являетесь владельцем этой спортивной школы!'},
                     status=status.HTTP_403_FORBIDDEN)
             serializer = self.get_serializer(
                 instance, data=request.data, partial=True)

@@ -90,14 +90,6 @@ class Section(models.Model):
         ],
         blank=False
     )
-    # phone = models.CharField(
-    #     verbose_name='Телефон',
-    #     max_length=18,
-    #     validators=[
-    #         MinLengthValidator(14, message='Минимум 14 символов'),
-    #     ],
-    #     blank=False
-    # )
     address = models.CharField(
         verbose_name='Адрес секции',
         max_length=350,

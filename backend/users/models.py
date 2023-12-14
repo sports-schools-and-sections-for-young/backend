@@ -6,13 +6,9 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    """
-    Модель кастомного пользователя.
-    Переопределил поле username, чтобы сделать свою валидацию и для
-    отображения понятного названия поля.
-    """
+    """Модель кастомного пользователя."""
     email = models.EmailField(
-        verbose_name='Адрес электронной почты',
+        verbose_name='Электронная почта',
         max_length=254,
         unique=True,
         blank=False
