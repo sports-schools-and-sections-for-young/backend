@@ -212,16 +212,16 @@ class SectionCreateSerializer(serializers.ModelSerializer):
                 {'message': 'Название секции должно содержать только буквы!'}
             )
         schedule_data = validated_data.pop('schedule')
-        section_lat = 0
-        section_lon = 0
-        coords = self.context.get('request').query_params.get('coords', None)
-        if coords:
-            section_lat, section_lon = map(float, coords.split(':'))
+        # section_lat = 0
+        # section_lon = 0
+        # coords = self.context.get('request').query_params.get('coords', None)
+        # if coords:
+        #     section_lat, section_lon = map(float, coords.split(':'))
         section = Section.objects.create(
             sport_organization=sport_organization_data,
             title=title_data,
-            latitude=section_lat,
-            longitude=section_lon,
+            # latitude=section_lat,
+            # longitude=section_lon,
             **validated_data
         )
         section.schedule.set(schedule_data)
