@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 
-from .models import DayOfWeek, PhotoOfSection, Section, SportType
+from .models import DayOfWeek, Section, SportType
 from .utils import ScheduleFilter
 
 
@@ -32,10 +32,3 @@ class SectionAdmin(admin.ModelAdmin):
 class DayOfWeekAdmin(admin.ModelAdmin):
     list_display = ('title', )
     list_filter = ('title', )
-
-
-@admin.register(PhotoOfSection)
-class PhotoOfSectionAdmin(admin.ModelAdmin):
-    list_display = ('section', )
-    list_filter = ('section', )
-    empty_value_display = settings.EMPTY_VALUE

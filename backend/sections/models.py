@@ -142,25 +142,3 @@ class Section(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class PhotoOfSection(models.Model):
-    """Модель фотографии секции."""
-    photo = models.ImageField(
-        verbose_name='Фотография секции',
-        upload_to='img/sections',
-        blank=True
-    )
-    section = models.ForeignKey(
-        Section,
-        verbose_name='Секция',
-        on_delete=models.CASCADE,
-        blank=False
-    )
-
-    class Meta:
-        verbose_name = 'Фотография секции'
-        verbose_name_plural = 'Фотографии секции'
-
-    def __str__(self):
-        return f'Фото секции {self.section.title}'
