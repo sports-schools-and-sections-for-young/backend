@@ -55,7 +55,7 @@ urlpatterns = [
     path('profile/',
          ProfileAPIView.as_view(), name='section_delete'),
     # Эндпойнт для редактирования спортшколы
-    path('sport_school/<int:pk>/update/',
+    path('sport_school/update/',
          SportOrganizationUpdateViewSet.as_view({'patch': 'partial_update'})),
     # Эндпойнт для просмотра всех секции пользователя в профиле
     path('section/', SectionAPIView.as_view(), name='section'),

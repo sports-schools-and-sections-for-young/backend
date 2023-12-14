@@ -127,17 +127,25 @@ class SportOrganizationUpdateViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.user != request.user:
+        try:
+            id_sportschool = SportOrganization.objects.get(
+                user=request.user
+            ).id
+            instance = SportOrganization.objects.get(id=id_sportschool)
+            if instance.user != request.user:
+                return Response(
+                    {'message':
+                     'Вы не являетесь владельцем этой спортивной организации!'},
+                    status=status.HTTP_403_FORBIDDEN)
+            serializer = self.get_serializer(
+                instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except ValueError:
             return Response(
-                {'message':
-                    'Вы не являетесь владельцем этой спортивной организации!'},
-                status=status.HTTP_403_FORBIDDEN)
-        serializer = self.get_serializer(
-            instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+                {'message': 'Такой ID спортивной школы отсутствует!'},
+                status=status.HTTP_400_BAD_REQUEST)
 
 
 class SectionAPIView(APIView):
