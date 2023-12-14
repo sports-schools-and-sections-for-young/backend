@@ -51,8 +51,8 @@ urlpatterns = [
     # Эндпойнт для удаления секции
     path('section/<int:id>/delete/',
          SectionDeleteAPIView.as_view(), name='section_delete'),
-    # Эндпойнт для просмотра спортшколы
-    path('profile/<int:id>/',
+    # Эндпойнт для просмотра спортшколы в личном кабинете
+    path('profile/',
          ProfileAPIView.as_view(), name='section_delete'),
     # Эндпойнт для редактирования спортшколы
     path('sport_school/<int:pk>/update/',

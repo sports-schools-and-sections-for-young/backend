@@ -196,15 +196,18 @@ class SectionDeleteAPIView(APIView):
 
 
 class ProfileAPIView(APIView):
-    """Вьюсет для отображения личного кабинета."""
+    """Вьюсет для отображения спортшколы в личном кабинете."""
     http_method_names = ('get', )
     queryset = SportOrganization.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request, id):
+    def get(self, request):
         try:
-            profile = self.queryset.get(id=id)
+            id_sportschool = SportOrganization.objects.get(
+                user=request.user
+            ).id
+            profile = self.queryset.get(id=id_sportschool)
             if profile.user != request.user:
                 return Response(
                     {'message':
@@ -216,3 +219,7 @@ class ProfileAPIView(APIView):
         except SportOrganization.DoesNotExist:
             return Response({'message': 'Спортивная школа не существует!'},
                             status=status.HTTP_404_NOT_FOUND)
+        except ValueError:
+            return Response(
+                {'message': 'Такой ID спортивной школы отсутствует!'},
+                status=status.HTTP_400_BAD_REQUEST)
