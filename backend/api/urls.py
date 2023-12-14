@@ -9,7 +9,7 @@ from .views import (CustomAuthenticationToken, ProfileAPIView, RegisterAPIView,
                     SectionDeleteAPIView, SectionUpdateViewSet,
                     SportOrganizationCreateViewSet,
                     SportOrganizationUpdateViewSet, SportTypeCreateViewSet,
-                    SportTypeViewSet)
+                    SportTypeViewSet, DeleteUserAPIView)
 
 app_name = 'api'
 
@@ -46,6 +46,7 @@ urlpatterns = [
     path('login/', CustomAuthenticationToken.as_view()),
     # Эндпойнт для регистрации пользователя
     path('register/', RegisterAPIView.as_view()),
+    path('user/delete/<id>/', DeleteUserAPIView.as_view()),
     # Эндпойнт для удаления секции
     path('section/<int:id>/delete/',
          SectionDeleteAPIView.as_view(), name='section_delete'),

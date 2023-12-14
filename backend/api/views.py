@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
 from organizations.models import SportOrganization
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -85,6 +86,17 @@ class CustomAuthenticationToken(APIView):
         except CustomUser.DoesNotExist:
             return Response({'message': 'Пользователь не найден'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteUserAPIView(APIView):
+    serializer_class = CustomUserSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def delete(self, request, id):
+        user = get_object_or_404(CustomUser, id=id)
+        user.delete()
+        return Response({'message': "Пользователь успешно удален"},
+                        status=status.HTTP_204_NO_CONTENT)
 
 
 class SportOrganizationCreateViewSet(ModelViewSet):
