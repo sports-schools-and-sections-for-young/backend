@@ -52,7 +52,7 @@ urlpatterns = [
     path('section/<int:id>/delete/',
          SectionDeleteAPIView.as_view(), name='section_delete'),
     # Эндпойнт для просмотра спортшколы в личном кабинете
-    path('profile/',
+    path('sport_school/',
          ProfileAPIView.as_view(), name='section_delete'),
     # Эндпойнт для редактирования спортшколы
     path('sport_school/update/',
