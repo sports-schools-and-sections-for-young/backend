@@ -1,5 +1,6 @@
 from django_filters.rest_framework import FilterSet, filters
 from haversine import haversine
+
 from sections.models import DayOfWeek, Section, SportType
 
 

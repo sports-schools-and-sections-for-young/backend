@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.validators import (MaxValueValidator, MinLengthValidator,
                                     MinValueValidator)
 from django.db import models
+
 from organizations.models import SportOrganization
 
 

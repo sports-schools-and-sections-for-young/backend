@@ -1,5 +1,6 @@
 from djoser.serializers import UserSerializer
 from haversine import haversine
+
 from organizations.models import SportOrganization
 from rest_framework import serializers
 from sections.models import DayOfWeek, Section, SportType
@@ -106,9 +107,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         check_password = validated_data.pop('check_password')
         if password == check_password:
-            user = CustomUser.objects.create(**validated_data,
-                                             password=password)
-            user.set_password('password')
+            user = self.Meta.model(**validated_data, password=password)
+            user.set_password(password)
             user.save()
             return user
         raise serializers.ValidationError(
@@ -122,6 +122,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('email', 'password')
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        models = CustomUser
+        field = ('email')
 
 
 class SportOrganizationCreateSerializer(serializers.ModelSerializer):

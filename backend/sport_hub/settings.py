@@ -142,8 +142,8 @@ DJOSER = {
     # 'USER_CREATE_PASSWORD_RETYPE': True,
     'SERIALIZERS': {
         'user_create': 'api.serializers.RegisterSerializer',
-        'user': 'api.serializers.CustomSerializers',
-        # 'user': 'api.serializers
+        'user': 'api.serializers.CustomUserSerializer',
+        'current_user': 'api.serializers.UserInfoSerializer',
     }
 }
 
