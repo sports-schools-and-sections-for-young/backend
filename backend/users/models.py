@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
         blank=False
     )
     password = models.CharField(
+        verbose_name='Пароль',
         max_length=128,
         validators=[
             MinLengthValidator(8, message='Минимум 8 символов')

@@ -14,6 +14,7 @@ class SportType(models.Model):
     )
 
     class Meta:
+        ordering = ('title', )
         verbose_name = "Вид спорта"
         verbose_name_plural = "Виды спорта"
 
@@ -109,15 +110,6 @@ class Section(models.Model):
         decimal_places=6,
         blank=True,
         null=True,
-        default=0
-    )
-    aviable = models.PositiveIntegerField(
-        verbose_name='Наличие свободных мест',
-        validators=[
-            MaxValueValidator(999, message='Максимальное значение 999'),
-        ],
-        null=True,
-        blank=False,
         default=0
     )
     price = models.PositiveIntegerField(
