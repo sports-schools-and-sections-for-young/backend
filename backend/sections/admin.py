@@ -15,11 +15,10 @@ class SportTypeAdmin(admin.ModelAdmin):
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('sport_organization', 'title', 'gender', 'sport_type',
                     'get_schedule', 'year_from', 'year_until', 'address',
-                    'aviable', 'price',
-                    'free_class')
+                    'price', 'free_class')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
                    ScheduleFilter, 'year_from', 'year_until', 'address',
-                   'aviable', 'price', 'free_class')
+                   'price', 'free_class')
     empty_value_display = settings.EMPTY_VALUE
 
     # Отображение дней работы секции в админке
