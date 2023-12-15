@@ -106,9 +106,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         check_password = validated_data.pop('check_password')
         if password == check_password:
-            user = CustomUser.objects.create(**validated_data,
-                                             password=password)
-            user.set_password('password')
+            user = CustomUser.objects.create(**validated_data)
+            user.set_password(password)
             user.save()
             return user
         raise serializers.ValidationError(
@@ -121,7 +120,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password')
+        fields = '__all__'
 
 
 class SportOrganizationCreateSerializer(serializers.ModelSerializer):

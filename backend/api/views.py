@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from organizations.models import SportOrganization
@@ -62,9 +63,10 @@ class RegisterAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
         if CustomUser.objects.filter(email=email).exists():
-            return Response({'message': 'Пользователь с такими данными '
-                            'существует!'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'message': 'Пользователь с такими данными уже существует!'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -77,17 +79,16 @@ class CustomAuthenticationToken(APIView):
 
     def post(self, request):
         email = request.data.get('email')
-        try:
-            user = CustomUser.objects.get(email=email)
-            if user.is_authenticated:
-                token, _ = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key},
-                                status=status.HTTP_200_OK)
-            return Response({'message': 'Неверные данные!'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        except CustomUser.DoesNotExist:
-            return Response({'message': 'Пользователь не найден!'},
-                            status=status.HTTP_400_BAD_REQUEST)
+        password = request.data.get('password')
+        user = authenticate(email=email, password=password)
+        if user:
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key},
+                            status=status.HTTP_200_OK)
+        return Response(
+            {'message': 'Пользователь с такими данными не существует!'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class DeleteUserAPIView(APIView):
