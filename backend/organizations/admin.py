@@ -7,7 +7,7 @@ from .models import SportOrganization
 @admin.register(SportOrganization)
 class SportOrganizationAdmin(admin.ModelAdmin):
     list_display = ('title', 'get_username', 'address', 'email', 'site')
-    list_filter = ('title', 'user__username', 'address', 'email', 'site')
+    list_filter = ('title', 'user__username', 'address')
     empty_value_display = settings.EMPTY_VALUE
 
     # Отображение владельца спортшколы в админке

@@ -1,3 +1,5 @@
+import uuid
+
 from djoser.serializers import UserSerializer
 from haversine import haversine
 from organizations.models import SportOrganization
@@ -94,8 +96,8 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации пользователя."""
-    check_password = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
+    check_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
@@ -105,6 +107,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password')
         check_password = validated_data.pop('check_password')
+        username = validated_data.get('username')
+        if not username:
+            validated_data['username'] = str(uuid.uuid4().hex[:12])
         if password == check_password:
             user = CustomUser.objects.create(**validated_data)
             user.set_password(password)
