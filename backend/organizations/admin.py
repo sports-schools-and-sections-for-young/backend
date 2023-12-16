@@ -14,7 +14,7 @@ class SportOrganizationAdmin(admin.ModelAdmin):
     def get_username(self, obj):
         return obj.user.username
     get_username.short_description = 'Владелец'
-    
+
     # Сокращенное отображение title в админке
     def get_title(self, obj):
         return str(obj.title)[:50]

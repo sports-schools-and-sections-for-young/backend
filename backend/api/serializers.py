@@ -110,13 +110,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         username = validated_data.get('username')
         first_name = validated_data.get('first_name')
         last_name = validated_data.get('last_name')
-        uuid = str(uuid.uuid4().hex[:12])
+        get_uuid = str(uuid.uuid4().hex[:12])
         if not username:
-            validated_data['username'] = uuid
+            validated_data['username'] = get_uuid
         if not first_name:
-            validated_data['first_name'] = uuid
+            validated_data['first_name'] = get_uuid
         if not last_name:
-            validated_data['last_name'] = uuid
+            validated_data['last_name'] = get_uuid
         if password == check_password:
             user = CustomUser.objects.create(**validated_data)
             user.set_password(password)
