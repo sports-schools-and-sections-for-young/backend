@@ -79,7 +79,12 @@ sudo docker compose exec backend python manage.py migrate
 sudo docker compose exec backend python manage.py collectstatic --no-input
 ```
 
-11. Создать суперпользователя:
+11. Для импорта данных в БД необходимо выполнить команду:
+```
+sudo docker compose exec backend python manage.py import_data
+```
+
+12. Создать суперпользователя:
 ```
 sudo docker compose exec backend python manage.py create_su
 ```
