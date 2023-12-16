@@ -19,6 +19,8 @@ services:
     volumes:
       - static:/app/static/
       - media:/app/media/
+      - ./data/day_of_week.csv:/app/data/day_of_week.csv
+      - ./data/sport_types.csv:/app/data/sport_types.csv
 
   frontend:
     image: yasporthub/frontend

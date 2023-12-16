@@ -79,7 +79,7 @@ sudo docker compose exec backend python manage.py migrate
 sudo docker compose exec backend python manage.py collectstatic --no-input
 ```
 
-11. Для импорта данных в БД необходимо выполнить команду:
+11. Для импорта данных в БД необходимо на удаленном сервере в папке sport_hub создать папку data и скопировать в нее скопировать два файла из проекта: day_of_week.csv и sport_types.csv. Затем выполнить команду:
 ```
 sudo docker compose exec backend python manage.py import_data
 ```
