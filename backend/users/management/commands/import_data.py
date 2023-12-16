@@ -9,11 +9,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            with open('data/day_of_week.csv', 'r', encoding='utf8') as file:
+            with open('./data/day_of_week.csv', 'r', encoding='utf8') as file:
                 file_reader = reader(file)
                 for row in file_reader:
                     DayOfWeek.objects.get_or_create(title=row[0])
-            with open('data/sport_types.csv', 'r', encoding='utf8') as file:
+            with open('./data/sport_types.csv', 'r', encoding='utf8') as file:
                 file_reader = reader(file)
                 for row in file_reader:
                     SportType.objects.get_or_create(title=row[0])
