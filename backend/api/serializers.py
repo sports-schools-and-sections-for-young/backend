@@ -82,7 +82,7 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
                 {'message':
                  'Название вида спорта должно начинаться с заглавной буквы!'}
             )
-        if not title_data.replace(' ', '').isalpha():
+        if not title_data.replace(' ', '').replace('-', '').isalpha():
             raise serializers.ValidationError(
                 {'message':
                  'Название вида спорта должно содержать только буквы!'}
