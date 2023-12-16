@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from organizations.models import SportOrganization
@@ -34,14 +35,30 @@ class SearchSectionViewSet(ModelViewSet):
     pagination_class = CustomPageNumberPagination
 
 
-class SportTypeViewSet(ModelViewSet):
+class SportTypeAllViewSet(ModelViewSet):
     """Вьюсет для отображения всех видов спорта."""
+    http_method_names = ('get', )
+    queryset = SportType.objects.all()
+    serializer_class = SportTypeSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
+
+class SportTypeViewSet(ModelViewSet):
+    """
+    Вьюсет для отображения видов спорта, которые привязаны хотя бы к одной 
+    секции.
+    """
     http_method_names = ('get', )
     queryset = SportType.objects.all()
     serializer_class = SportTypeSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = SportTypeFilter
+
+    def get_queryset(self):
+        queryset = SportType.objects.annotate(sections_count=Count('section'))
+        queryset = queryset.filter(sections_count__gt=0)
+        return queryset
 
 
 class SportTypeCreateViewSet(ModelViewSet):
