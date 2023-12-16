@@ -48,8 +48,8 @@ class SearchSectionSerializer(serializers.ModelSerializer):
             # Координаты пользователя
             user_coords = (user_lat, user_lon)
             # Получение широты и долготы секции
-            section_lat = obj.address.latitude
-            section_lon = obj.address.longitude
+            section_lat = obj.latitude
+            section_lon = obj.longitude
             # Координаты секции
             section_coords = (section_lat, section_lon)
             # Расчет расстояния

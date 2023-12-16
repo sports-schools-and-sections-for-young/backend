@@ -60,8 +60,8 @@ class SearchSectionFilter(FilterSet):
             # Перебираем все объекты модели Section
             for section in queryset:
                 # Получение широты и долготы секции
-                section_lat = section.address.latitude
-                section_lon = section.address.longitude
+                section_lat = section.latitude
+                section_lon = section.longitude
                 # Координаты секции
                 section_coords = (section_lat, section_lon)
                 # Расчет расстояния
