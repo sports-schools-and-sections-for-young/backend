@@ -45,7 +45,7 @@ class SportTypeAllViewSet(ModelViewSet):
 
 class SportTypeViewSet(ModelViewSet):
     """
-    Вьюсет для отображения видов спорта, которые привязаны хотя бы к одной 
+    Вьюсет для отображения видов спорта, которые привязаны хотя бы к одной
     секции.
     """
     http_method_names = ('get', )
