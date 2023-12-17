@@ -54,7 +54,7 @@ urlpatterns = [
     # Эндпойнт для смены пароля пользователя
     path('reset_password/', ResetPasswordAPIView.as_view()),
     # Эндпойнт для удаления пользователя
-    path('user/<int:id>/delete/', DeleteUserAPIView.as_view()),
+    path('user/delete/', DeleteUserAPIView.as_view()),
     # Эндпойнт для удаления секции
     path('section/<int:id>/delete/',
          SectionDeleteAPIView.as_view(), name='section_delete'),

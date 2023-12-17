@@ -143,7 +143,10 @@ class DeleteUserAPIView(APIView):
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticated, )
 
-    def delete(self, request, id):
+    def delete(self, request):
+        id = request.user.id
+        email = request.user.email
+        password = request.data.get('current_password')
         user = get_object_or_404(CustomUser, id=id)
         if user != request.user:
             return Response(
@@ -151,9 +154,15 @@ class DeleteUserAPIView(APIView):
                     'У вас нет прав для удаления этого пользователя!'},
                 status=status.HTTP_403_FORBIDDEN
             )
-        user.delete()
-        return Response({'message': 'Пользователь успешно удален!'},
-                        status=status.HTTP_204_NO_CONTENT)
+        user = authenticate(email=email, password=password)
+        if user:
+            user.delete()
+            return Response({'message': 'Пользователь успешно удален!'},
+                            status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'message': 'Пользователь с такими данными не существует!'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class SportOrganizationCreateViewSet(ModelViewSet):
