@@ -5,9 +5,10 @@ from rest_framework import permissions
 from rest_framework.routers import DefaultRouter
 
 from .views import (CustomAuthenticationToken, DeleteUserAPIView,
-                    ProfileAPIView, RegisterAPIView, SearchSectionViewSet,
-                    SectionAPIView, SectionCreateViewSet, SectionDeleteAPIView,
-                    SectionUpdateViewSet, SportOrganizationCreateViewSet,
+                    ProfileAPIView, RegisterAPIView, ResetPasswordAPIView,
+                    SearchSectionViewSet, SectionAPIView, SectionCreateViewSet,
+                    SectionDeleteAPIView, SectionUpdateViewSet,
+                    SportOrganizationCreateViewSet,
                     SportOrganizationUpdateViewSet, SportTypeAllViewSet,
                     SportTypeCreateViewSet, SportTypeViewSet)
 
@@ -50,6 +51,8 @@ urlpatterns = [
     path('login/', CustomAuthenticationToken.as_view()),
     # Эндпойнт для регистрации пользователя
     path('register/', RegisterAPIView.as_view()),
+    # Эндпойнт для смены пароля пользователя
+    path('reset_password/', ResetPasswordAPIView.as_view()),
     # Эндпойнт для удаления пользователя
     path('user/<int:id>/delete/', DeleteUserAPIView.as_view()),
     # Эндпойнт для удаления секции

@@ -108,6 +108,35 @@ class CustomAuthenticationToken(APIView):
         )
 
 
+class ResetPasswordAPIView(APIView):
+    """Вьюсет для смены пароля пользователя."""
+    http_method_names = ('put', )
+    serializer_class = CustomUserSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def put(self, request):
+        email = request.user.email
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        check_password = request.data.get('check_password')
+        if new_password != check_password:
+            return Response({'message': 'Пароли не совпадают!'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if old_password == new_password:
+            return Response({'message': 'Пароли не должны совпадать!'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        user = authenticate(email=email, password=old_password)
+        if user:
+            user.set_password(new_password)
+            user.save()
+            return Response({'message': 'Пароль успешно изменен!'},
+                            status=status.HTTP_200_OK)
+        return Response(
+            {'message': 'Пользователь с такими данными не существует!'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
 class DeleteUserAPIView(APIView):
     """Вьюсет для удаления пользователя."""
     http_method_names = ('delete', )
