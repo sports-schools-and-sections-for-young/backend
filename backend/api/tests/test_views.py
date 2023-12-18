@@ -117,7 +117,7 @@ class SectionViewsTest(TestCase):
             id=1
         )
         self.sport_type = SportType.objects.create(
-            title='test'
+            title='test', id=1
         )
         self.days = DayOfWeek.objects.create(title='tests', id=1)
         self.guest_client = APIClient()
@@ -128,11 +128,14 @@ class SectionViewsTest(TestCase):
             'title': 'Testt',
             'sport_type': 1,
             'price': 0,
-            'aviable': 0,
+            'gender': 'Man',
+            'latitude': 0,
+            'longitude': 0,
             'year_from': 3,
             'year_until': 10,
             'address': 'test',
-            'shedule': (1,)
+            'free_class': True,
+            'shedule': [1, ]
 
         }
         response = self.guest_client.post('/api/create_section/', data)
