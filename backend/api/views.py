@@ -104,7 +104,7 @@ class CustomAuthenticationToken(APIView):
                             status=status.HTTP_200_OK)
         return Response(
             {'message': 'Пользователь с такими данными не существует!'},
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_404_NOT_FOUND
         )
 
 
@@ -123,7 +123,8 @@ class ResetPasswordAPIView(APIView):
             return Response({'message': 'Пароли не совпадают!'},
                             status=status.HTTP_400_BAD_REQUEST)
         if old_password == new_password:
-            return Response({'message': 'Пароли не должны совпадать!'},
+            return Response({'message': 'Старый и новый пароли не должны '
+                             'совпадать!'},
                             status=status.HTTP_400_BAD_REQUEST)
         user = authenticate(email=email, password=old_password)
         if user:
@@ -133,7 +134,7 @@ class ResetPasswordAPIView(APIView):
                             status=status.HTTP_200_OK)
         return Response(
             {'message': 'Пользователь с такими данными не существует!'},
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_404_NOT_FOUND
         )
 
 
@@ -151,7 +152,7 @@ class DeleteUserAPIView(APIView):
         if user != request.user:
             return Response(
                 {'message':
-                    'У вас нет прав для удаления этого пользователя!'},
+                    'У вас нет прав на удаление этого пользователя!'},
                 status=status.HTTP_403_FORBIDDEN
             )
         user = authenticate(email=email, password=password)
@@ -161,7 +162,7 @@ class DeleteUserAPIView(APIView):
                             status=status.HTTP_204_NO_CONTENT)
         return Response(
             {'message': 'Пользователь с такими данными не существует!'},
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_404_NOT_FOUND
         )
 
 
@@ -193,17 +194,17 @@ class SportOrganizationUpdateViewSet(ModelViewSet):
             if instance.user != request.user:
                 return Response(
                     {'message':
-                     'Вы не являетесь владельцем этой спортивной школы!'},
+                     'У вас нет прав для редактирования этой спортивной '
+                     'школы!'},
                     status=status.HTTP_403_FORBIDDEN)
             serializer = self.get_serializer(
                 instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)
-            return Response(serializer.data)
-        except ValueError:
-            return Response(
-                {'message': 'Такой ID спортивной школы отсутствует!'},
-                status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except SportOrganization.DoesNotExist:
+            return Response({'message': 'Спортивная школа не существует!'},
+                            status=status.HTTP_404_NOT_FOUND)
 
 
 class SectionAPIView(APIView):
@@ -285,7 +286,3 @@ class ProfileAPIView(APIView):
         except SportOrganization.DoesNotExist:
             return Response({'message': 'Спортивная школа не существует!'},
                             status=status.HTTP_404_NOT_FOUND)
-        except ValueError:
-            return Response(
-                {'message': 'Такой ID спортивной школы отсутствует!'},
-                status=status.HTTP_400_BAD_REQUEST)
