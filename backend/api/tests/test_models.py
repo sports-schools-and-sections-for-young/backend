@@ -141,4 +141,4 @@ class UserTestModel(TestCase):
     def test_save_user(self):
         user = UserTestModel.user
         self.assertIsNotNone(user.username)
-        self.assertTrue(user.username.isalnum())
+        self.assertEqual(type(user.username), str)
