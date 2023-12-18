@@ -21,7 +21,6 @@ class SearchSectionFilter(FilterSet):
         to_field_name='title'
     )
     price = filters.NumberFilter(method='get_price')
-    address = filters.CharFilter(method='get_address')
     schedule = filters.ModelMultipleChoiceFilter(
         label='День недели',
         queryset=DayOfWeek.objects.all(),
@@ -35,8 +34,8 @@ class SearchSectionFilter(FilterSet):
 
     class Meta:
         model = Section
-        fields = ('gender', 'sport_type', 'age_group', 'price', 'address',
-                  'schedule', 'free_class')
+        fields = ('gender', 'sport_type', 'age_group', 'price', 'schedule',
+                  'free_class')
 
     # Фильтр по возрасту ребенка
     def get_age_group(self, queryset, name, value):
@@ -61,8 +60,8 @@ class SearchSectionFilter(FilterSet):
             # Перебираем все объекты модели Section
             for section in queryset:
                 # Получение широты и долготы секции
-                section_lat = section.address.latitude
-                section_lon = section.address.longitude
+                section_lat = section.latitude
+                section_lon = section.longitude
                 # Координаты секции
                 section_coords = (section_lat, section_lon)
                 # Расчет расстояния

@@ -164,7 +164,6 @@ class SectionUpdateDeleteTest(TestCase):
             id=1,
             sport_type=self.sport_type,
             price=0,
-            aviable=0,
             year_from=3,
             year_until=10,
             address='test',

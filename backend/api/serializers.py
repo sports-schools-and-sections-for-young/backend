@@ -1,3 +1,5 @@
+import uuid
+
 from djoser.serializers import UserSerializer
 from haversine import haversine
 
@@ -81,10 +83,12 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
                 {'message':
                  'Название вида спорта должно начинаться с заглавной буквы!'}
             )
-        if not title_data.replace(' ', '').isalpha():
+        if not title_data.replace(' ', '').replace('-', '').replace(
+                '"', '').replace('№', '').isalpha():
             raise serializers.ValidationError(
                 {'message':
-                 'Название вида спорта должно содержать только буквы!'}
+                 'Название вида спорта может содержать буквы, пробел, знак '
+                 'минус, кавычки, номер!'}
             )
         if SportType.objects.filter(title__iexact=title_data).exists():
             raise serializers.ValidationError(
@@ -95,8 +99,8 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     """Сериализатор для регистрации пользователя."""
-    check_password = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
+    check_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
@@ -106,8 +110,19 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         password = validated_data.pop('password')
         check_password = validated_data.pop('check_password')
+        username = validated_data.get('username')
+        first_name = validated_data.get('first_name')
+        last_name = validated_data.get('last_name')
+        get_uuid = str(uuid.uuid4().hex[:12])
+        if not username:
+            validated_data['username'] = get_uuid
+        if not first_name:
+            validated_data['first_name'] = get_uuid
+        if not last_name:
+            validated_data['last_name'] = get_uuid
         if password == check_password:
-            user = self.Meta.model(**validated_data, password=password)
+            user = CustomUser.objects.create(**validated_data)
+
             user.set_password(password)
             user.save()
             return user
@@ -121,7 +136,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'password')
+        fields = '__all__'
 
 
 class UserInfoSerializer(serializers.ModelSerializer):
@@ -191,10 +206,12 @@ class SectionCreateSerializer(serializers.ModelSerializer):
                 {'message':
                  'Название секции должно начинаться с заглавной буквы!'}
             )
-        if not title_data.replace(' ', '').isalpha():
+        if not title_data.replace(' ', '').replace('-', '').replace(
+                '"', '').replace('№', '').isalpha():
             raise serializers.ValidationError(
-                {'message': 'Название секции должно содержать только буквы!'}
-        )
+                {'message': 'Название секции может содержать буквы, пробел, '
+                 'знак минус, кавычки, номер!'}
+            )
         schedule_data = validated_data.pop('schedule')
         section = Section.objects.create(
             sport_organization=sport_organization_data,

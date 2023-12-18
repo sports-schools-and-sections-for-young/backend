@@ -79,7 +79,6 @@ class SectionTestModels(TestCase):
         )
         cls.section = Section.objects.create(
             title='Ghj',
-            aviable=1000,
             sport_organization=cls.sportorganiz,
             sport_type=cls.sport_type,
             price=10000,
@@ -93,12 +92,6 @@ class SectionTestModels(TestCase):
         title_min = section._meta.get_field('title').validators[0]
         message = title_min.message
         self.assertEqual(message, 'Минимум 5 символов')
-
-    def test_aviable_max(self):
-        section = SectionTestModels.section
-        aviable_max = section._meta.get_field('aviable').validators[0]
-        message = aviable_max.message
-        self.assertEqual(message, 'Максимальное значение 999')
 
     def test_year_from_min(self):
         year_from = SectionTestModels.section

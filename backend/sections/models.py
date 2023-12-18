@@ -17,6 +17,7 @@ class SportType(models.Model):
     class Meta:
         verbose_name = "Вид спорта"
         verbose_name_plural = "Виды спорта"
+        ordering = ('title', )
 
     def __str__(self):
         return self.title
@@ -67,8 +68,8 @@ class Section(models.Model):
         SportType,
         verbose_name='Вид спорта',
         on_delete=models.SET_NULL,
-        null=True,
-        blank=False
+        blank=False,
+        null=True
     )
     schedule = models.ManyToManyField(
         DayOfWeek,
@@ -100,7 +101,7 @@ class Section(models.Model):
         verbose_name='Широта',
         max_digits=12,
         decimal_places=6,
-        blank=True,
+        blank=False,
         null=True,
         default=0
     )
@@ -108,17 +109,8 @@ class Section(models.Model):
         verbose_name='Долгота',
         max_digits=12,
         decimal_places=6,
-        blank=True,
-        null=True,
-        default=0
-    )
-    aviable = models.PositiveIntegerField(
-        verbose_name='Наличие свободных мест',
-        validators=[
-            MaxValueValidator(999, message='Максимальное значение 999'),
-        ],
-        null=True,
         blank=False,
+        null=True,
         default=0
     )
     price = models.PositiveIntegerField(
@@ -126,14 +118,14 @@ class Section(models.Model):
         validators=[
             MaxValueValidator(99999, message='Максимальное значение 99999'),
         ],
-        null=True,
         blank=False,
+        null=True,
         default=0
     )
     free_class = models.BooleanField(
         verbose_name='Бесплатное пробное занятие',
-        default=False,
-        blank=True
+        blank=True,
+        default=False
     )
 
     class Meta:
