@@ -49,8 +49,10 @@ class ViewsTestAuthenticated(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_del_user(self):
-
-        response = self.guest_client.delete('/api/user/delete/')
+        data = {
+            'current_password': 'test14536'
+        }
+        response = self.guest_client.delete('/api/user/delete/', data)
         self.assertEqual(response.status_code, 204)
 
     def test_sport_type_create(self):

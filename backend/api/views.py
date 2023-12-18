@@ -146,13 +146,25 @@ class DeleteUserAPIView(APIView):
     permission_classes = (IsAuthenticated, )
 
     def delete(self, request):
-        user = get_object_or_404(CustomUser, id=request.user.id)
-        if user.is_authenticated:
+        id = request.user.id
+        email = request.user.email
+        password = request.data.get('current_password')
+        user = get_object_or_404(CustomUser, id=id)
+        if user != request.user:
+            return Response(
+                {'message':
+                    'У вас нет прав на удаление этого пользователя!'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        user = authenticate(email=email, password=password)
+        if user:
             user.delete()
-            return Response({'message': 'Пользователь успешно удален'},
+            return Response({'message': 'Пользователь успешно удален!'},
                             status=status.HTTP_204_NO_CONTENT)
-        return Response({'message': 'Пользователь не аутентифицирован'},
-                        status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            {'message': 'Пользователь с такими данными не существует!'},
+            status=status.HTTP_404_NOT_FOUND
+        )
 
 
 class SportOrganizationCreateViewSet(ModelViewSet):
