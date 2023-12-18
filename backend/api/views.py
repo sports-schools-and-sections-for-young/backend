@@ -98,8 +98,10 @@ class DeleteUserAPIView(APIView):
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticated, )
 
-    def delete(self, request, id):
-        user = get_object_or_404(CustomUser, id=id)
+    def delete(self, request):
+        user = get_object_or_404(
+            CustomUser,
+            id=request.user.id)
         if user != request.user:
             return Response(
                 {'message':

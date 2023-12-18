@@ -50,7 +50,7 @@ class ViewsTestAuthenticated(TestCase):
 
     def test_del_user(self):
 
-        response = self.guest_client.delete('/api/user/1/delete/')
+        response = self.guest_client.delete('/api/user/delete/')
         self.assertEqual(response.status_code, 204)
 
     def test_sport_type_create(self):

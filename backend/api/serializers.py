@@ -194,7 +194,7 @@ class SectionCreateSerializer(serializers.ModelSerializer):
         if not title_data.replace(' ', '').isalpha():
             raise serializers.ValidationError(
                 {'message': 'Название секции должно содержать только буквы!'}
-            )
+        )
         schedule_data = validated_data.pop('schedule')
         section = Section.objects.create(
             sport_organization=sport_organization_data,
