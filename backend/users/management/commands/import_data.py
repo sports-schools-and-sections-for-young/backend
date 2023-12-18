@@ -16,7 +16,11 @@ class Command(BaseCommand):
             with open('./data/sport_types.csv', 'r', encoding='utf8') as file:
                 file_reader = reader(file)
                 for row in file_reader:
-                    SportType.objects.get_or_create(title=row[0])
+                    if not SportType.objects.filter(title=row[0]).exists():
+                        SportType.objects.create(
+                            title=row[0],
+                            moderation=True
+                        )
             self.stdout.write(self.style.SUCCESS(
                 'Данные успешно загружены в БД.')
             )
