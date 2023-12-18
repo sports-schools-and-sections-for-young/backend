@@ -7,18 +7,20 @@ from .utils import ScheduleFilter
 
 @admin.register(SportType)
 class SportTypeAdmin(admin.ModelAdmin):
-    list_display = ('title', )
-    list_filter = ('title', )
+    list_display = ('title', 'moderation')
+    list_filter = ('title', 'moderation')
+    list_editable = ('moderation', )
 
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ('get_sport_organization', 'title', 'gender', 'sport_type',
                     'get_schedule', 'year_from', 'year_until', 'address',
-                    'price', 'free_class')
+                    'price', 'free_class', 'moderation')
     list_filter = ('sport_organization', 'title', 'gender', 'sport_type',
                    ScheduleFilter, 'year_from', 'year_until', 'address',
-                   'price', 'free_class')
+                   'price', 'free_class', 'moderation')
+    list_editable = ('moderation', )
     empty_value_display = settings.EMPTY_VALUE
 
     # Отображение дней работы секции в админке

@@ -12,6 +12,10 @@ class SportType(models.Model):
         max_length=255,
         blank=False
     )
+    moderation = models.BooleanField(
+        blank=False,
+        default=False
+    )
 
     class Meta:
         verbose_name = "Вид спорта"
@@ -124,6 +128,10 @@ class Section(models.Model):
     free_class = models.BooleanField(
         verbose_name='Бесплатное пробное занятие',
         blank=True,
+        default=False
+    )
+    moderation = models.BooleanField(
+        blank=False,
         default=False
     )
 

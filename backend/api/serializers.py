@@ -22,7 +22,7 @@ class SearchSectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        exclude = ('year_from', 'year_until')
+        exclude = ('year_from', 'year_until', 'moderation')
 
     # Отображение возрастной группы
     def get_age_group(self, obj):
@@ -62,7 +62,7 @@ class SportTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SportType
-        fields = '__all__'
+        exclude = ('moderation', )
 
 
 class SportTypeCreateSerializer(serializers.ModelSerializer):

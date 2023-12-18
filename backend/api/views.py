@@ -34,6 +34,13 @@ class SearchSectionViewSet(ModelViewSet):
     filterset_class = SearchSectionFilter
     pagination_class = CustomPageNumberPagination
 
+    def get_queryset(self):
+        queryset = Section.objects.filter(
+            moderation=True,
+            sport_type__moderation=True
+        )
+        return queryset
+
 
 class SportTypeAllViewSet(ModelViewSet):
     """Вьюсет для отображения всех видов спорта."""
@@ -57,7 +64,7 @@ class SportTypeViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = SportType.objects.annotate(sections_count=Count('section'))
-        queryset = queryset.filter(sections_count__gt=0)
+        queryset = queryset.filter(sections_count__gt=0, moderation=True)
         return queryset
 
 
