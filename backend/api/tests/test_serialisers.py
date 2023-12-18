@@ -1,12 +1,15 @@
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory, TestCase
+from haversine import haversine
 from rest_framework import serializers
+from unittest.mock import Mock
 
 from api.serializers import (
     SportTypeCreateSerializer,
     RegisterSerializer,
-    SportOrganizationCreateSerializer
+    SportOrganizationCreateSerializer,
+    SearchSectionSerializer
 )
-from sections.models import SportType
+from sections.models import SportType, Section, DayOfWeek
 from organizations.models import SportOrganization
 from users.models import CustomUser
 
@@ -81,3 +84,57 @@ class SportOrganizationCreateSerializerTestCase(TestCase):
         if serializer.is_valid():
             with self.assertRaises(serializers.ValidationError):
                 serializer.save()
+
+
+class SearchSectionSeriializerTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = CustomUser.objects.create(email='teat@example.com',
+                                             password='test_142355', id=1)
+        cls.sport_organ = SportOrganization.objects.create(id=1, user=cls.user)
+        cls.section = Section.objects.create(
+            id=1,
+            year_from=3,
+            year_until=5,
+            sport_organization_id=cls.sport_organ.id,
+            latitude=45.035432,
+            longitude=38.972977)
+        day_1 = DayOfWeek.objects.create(title='Monday')
+        day_2 = DayOfWeek.objects.create(title='Thuesday')
+        cls.section.schedule.add(day_1, day_2)
+
+    def test_age_group_test(self):
+        data = {
+            'year_from': 3,
+            'year_until': 7
+        }
+        section = Section(**data)
+        serializer = SearchSectionSerializer()
+        result = serializer.get_age_group(section)
+
+        self.assertEqual(result, {
+            "year_from": 3,
+            "year_until": 7,
+        })
+
+    def test_get_schedule(self):
+        serializer = SearchSectionSerializer()
+        result = serializer.get_schedule(SearchSectionSeriializerTest.section)
+        expected_schedule = 'Monday, Thuesday'
+        self.assertEqual(result, expected_schedule)
+
+    def test_get_distance(self):
+        mock_request = Mock()
+        mock_query_params = {'coords': '45.027483:38.971181'}
+        mock_request.query_params = mock_query_params
+        self.context = {'request': mock_request}
+        coords = self.context['request'].query_params.get('coords')
+        user_lat, user_lon = map(float, coords.split(':'))
+        user_coords = (user_lat, user_lon)
+        obj = SearchSectionSeriializerTest.section
+        section_coords = (obj.latitude, obj.longitude)
+        serializer = SearchSectionSerializer(context=self.context)
+        result = serializer.get_distance(obj)
+        expected_distance = haversine(user_coords, section_coords)
+        self.assertEqual(result, round(expected_distance, 2))
