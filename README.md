@@ -2,8 +2,6 @@
 
 http://sporthub.acceleratorpracticum.ru/
 
-http://185.41.162.249/
-
 [![SportHub workflow](https://github.com/sports-schools-and-sections-for-young/backend/actions/workflows/main.yml/badge.svg)](https://github.com/sports-schools-and-sections-for-young/backend/actions/workflows/main.yml)
 
 ### 1. Запуск проекта в контейнерах на удаленном сервере
@@ -130,12 +128,17 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-6. Создать суперпользователя:
+6. Для импорта данных в БД необходимо скопировать папку data в папку backend. Затем выполнить команду:
+```
+python manage.py import_data
+```
+
+7. Создать суперпользователя:
 ```
 python manage.py create_su
 ```
 
-7. Запустить сервер:
+8. Запустить сервер:
 ```
 python manage.py runserver
 ```
