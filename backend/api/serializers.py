@@ -184,7 +184,7 @@ class SectionCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Section
-        exclude = ('sport_organization', )
+        exclude = ('sport_organization', 'moderation')
 
     # Метод для добавления секции спортшколы
     def create(self, validated_data):
