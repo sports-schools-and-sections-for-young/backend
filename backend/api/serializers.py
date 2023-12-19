@@ -83,11 +83,11 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
                  'Название вида спорта должно начинаться с заглавной буквы!'}
             )
         if not title_data.replace(' ', '').replace('-', '').replace(
-                '"', '').replace('№', '').isalpha():
+                '"', '').replace('№', '').isalnum():
             raise serializers.ValidationError(
                 {'message':
-                 'Название вида спорта может содержать буквы, пробел, знак '
-                 'минус, кавычки, номер!'}
+                 'Название вида спорта может содержать буквы, цифры, пробел, '
+                 'знак минус, кавычки, номер!'}
             )
         if SportType.objects.filter(title__iexact=title_data).exists():
             raise serializers.ValidationError(
@@ -198,10 +198,10 @@ class SectionCreateSerializer(serializers.ModelSerializer):
                  'Название секции должно начинаться с заглавной буквы!'}
             )
         if not title_data.replace(' ', '').replace('-', '').replace(
-                '"', '').replace('№', '').isalpha():
+                '"', '').replace('№', '').isalnum():
             raise serializers.ValidationError(
-                {'message': 'Название секции может содержать буквы, пробел, '
-                 'знак минус, кавычки, номер!'}
+                {'message': 'Название секции может содержать буквы, цифры, '
+                 'пробел, знак минус, кавычки, номер!'}
             )
         schedule_data = validated_data.pop('schedule')
         section = Section.objects.create(
