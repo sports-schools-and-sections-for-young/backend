@@ -76,12 +76,6 @@ class SportTypeCreateSerializer(serializers.ModelSerializer):
     # Метод для добавления вида спорта
     def create(self, validated_data):
         title_data = validated_data.pop('title')
-        first_word = title_data.split()[0]
-        if not first_word.istitle():
-            raise serializers.ValidationError(
-                {'message':
-                 'Название вида спорта должно начинаться с заглавной буквы!'}
-            )
         if not title_data.replace(' ', '').replace('-', '').replace(
                 '"', '').replace('№', '').isalnum():
             raise serializers.ValidationError(
@@ -191,12 +185,6 @@ class SectionCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         sport_organization_data = SportOrganization.objects.get(user=user)
         title_data = validated_data.pop('title')
-        first_word = title_data.split()[0]
-        if not first_word.istitle():
-            raise serializers.ValidationError(
-                {'message':
-                 'Название секции должно начинаться с заглавной буквы!'}
-            )
         if not title_data.replace(' ', '').replace('-', '').replace(
                 '"', '').replace('№', '').isalnum():
             raise serializers.ValidationError(
@@ -216,15 +204,20 @@ class SectionCreateSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data['year_from'] > data['year_until']:
             raise serializers.ValidationError(
-                {'message': 'Возрастная группа задана неверно'}
+                {'message': 'Возрастная группа задана неверно!'}
             )
         return data
 
     # Проверка существования секции в базе
     def validate_title(self, title):
-        if Section.objects.filter(title=title).exists():
+        user = self.context['request'].user
+        sport_organization_data = SportOrganization.objects.get(user=user)
+        if Section.objects.filter(
+            title=title,
+            sport_organization=sport_organization_data
+        ).exists():
             raise serializers.ValidationError(
-                {'message': f'Секция с таким именем {title} уже существует'}
+                {'message': 'Секция с таким названием уже существует!'}
             )
         return title
 
@@ -232,7 +225,7 @@ class SectionCreateSerializer(serializers.ModelSerializer):
     def validate_price(self, price):
         if price < 0:
             raise serializers.ValidationError(
-                {'message': 'Цена должна быть положительным числом'}
+                {'message': 'Цена должна быть положительным числом!'}
             )
         return price
 
