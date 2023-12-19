@@ -7,9 +7,8 @@ from .utils import ScheduleFilter
 
 @admin.register(SportType)
 class SportTypeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'moderation')
-    list_filter = ('title', 'moderation')
-    list_editable = ('moderation', )
+    list_display = ('title', )
+    list_filter = ('title', )
 
 
 @admin.register(Section)

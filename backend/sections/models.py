@@ -12,10 +12,6 @@ class SportType(models.Model):
         max_length=255,
         blank=False
     )
-    moderation = models.BooleanField(
-        blank=False,
-        default=False
-    )
 
     class Meta:
         verbose_name = "Вид спорта"

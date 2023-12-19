@@ -62,7 +62,7 @@ class SportTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SportType
-        exclude = ('moderation', )
+        fields = '__all__'
 
 
 class SportTypeCreateSerializer(serializers.ModelSerializer):

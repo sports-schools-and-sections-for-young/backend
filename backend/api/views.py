@@ -27,19 +27,12 @@ from .serializers import (CustomUserSerializer, ProfileSerializer,
 class SearchSectionViewSet(ModelViewSet):
     """Вьюсет для поиска секций."""
     http_method_names = ('get', )
-    queryset = Section.objects.all()
+    queryset = Section.objects.filter(moderation=True)
     serializer_class = SearchSectionSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, )
     filter_backends = (DjangoFilterBackend, )
     filterset_class = SearchSectionFilter
     pagination_class = CustomPageNumberPagination
-
-    def get_queryset(self):
-        queryset = Section.objects.filter(
-            moderation=True,
-            sport_type__moderation=True
-        )
-        return queryset
 
 
 class SportTypeAllViewSet(ModelViewSet):
@@ -64,7 +57,7 @@ class SportTypeViewSet(ModelViewSet):
 
     def get_queryset(self):
         queryset = SportType.objects.annotate(sections_count=Count('section'))
-        queryset = queryset.filter(sections_count__gt=0, moderation=True)
+        queryset = queryset.filter(sections_count__gt=0)
         return queryset
 
 
